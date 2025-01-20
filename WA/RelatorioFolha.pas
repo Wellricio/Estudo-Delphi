@@ -1,0 +1,60 @@
+unit RelatorioFolha;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, RLReport, Vcl.StdCtrls, Data.DB,
+  Vcl.Grids, Vcl.DBGrids, Data.Win.ADODB;
+
+type
+  TForm2 = class(TForm)
+    ReportFolhaPonto: TRLReport;
+    RLBandHeader: TRLBand;
+    RLLabel1: TRLLabel;
+    RLLabel2: TRLLabel;
+    RLLabel3: TRLLabel;
+    RLLabel4: TRLLabel;
+    RLLabel5: TRLLabel;
+    RLPanelWa: TRLPanel;
+    RLDBText1: TRLDBText;
+    RLPanel1: TRLPanel;
+    RLDBText2: TRLDBText;
+    RLDBText3: TRLDBText;
+    RLDBText4: TRLDBText;
+    RLLabel6: TRLLabel;
+    RLDraw2: TRLDraw;
+    RLLabel12: TRLLabel;
+    RLLabel13: TRLLabel;
+    RLDraw1: TRLDraw;
+    RLDraw3: TRLDraw;
+    RLLabel14: TRLLabel;
+    RLDraw4: TRLDraw;
+    RLBand1: TRLBand;
+    RLLabel7: TRLLabel;
+    RLBand2: TRLBand;
+    RLBand3: TRLBand;
+    RLLabel8: TRLLabel;
+    RLLabel9: TRLLabel;
+    RLLabel10: TRLLabel;
+    RLDBText5: TRLDBText;
+    RLDBText6: TRLDBText;
+    RLDBText7: TRLDBText;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form2: TForm2;
+
+implementation
+
+{$R *.dfm}
+
+uses ControleDePonto;
+
+
+
+end.

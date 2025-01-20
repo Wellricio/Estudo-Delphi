@@ -1,0 +1,417 @@
+unit Unit2;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
+  Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Imaging.pngimage, FireDAC.Stan.Intf,
+  FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf,
+  FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys,
+  FireDAC.Phys.SQLite, FireDAC.Phys.SQLiteDef, FireDAC.Stan.ExprFuncs, FireDAC.VCLUI.Wait,
+  Data.DB, FireDAC.Comp.Client, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.UI, FireDAC.Stan.Param,
+  FireDAC.Phys.SQLiteWrapper.Stat, Vcl.Menus, Vcl.ComCtrls, Vcl.Grids,
+  Vcl.DBGrids, FireDAC.DatS, FireDAC.DApt.Intf, Data.Win.ADODB,
+  Datasnap.Provider, Datasnap.DBClient, System.Hash, IdHashSHA, IdGlobal,
+  Vcl.Samples.Spin;
+type
+  TWaPrincipal = class(TForm)
+    PanelNav: TPanel;
+    LabelCheck: TLabel;
+    LabelFolha: TLabel;
+    LabelCadastrar: TLabel;
+    LabelFuncionarios: TLabel;
+    LabelSair: TLabel;
+    Image1: TImage;
+    LabelNome: TLabel;
+    EditNomeFuncionario: TEdit;
+    LabelCargo: TLabel;
+    LabelSalario: TLabel;
+    EditSalarioFuncionario: TEdit;
+    ButtonCadastrar: TButton;
+    PageControlNav: TPageControl;
+    TabInicio: TTabSheet;
+    TabFolhaDePonto: TTabSheet;
+    TabFuncionarios: TTabSheet;
+    TabCadastrarFuncionarios: TTabSheet;
+    FormularioCadastroFuncionario: TPanel;
+    PageControl1: TPageControl;
+    TabFormularioLogin: TTabSheet;
+    TabHome: TTabSheet;
+    LabelUsuario: TLabel;
+    EditUsuario: TEdit;
+    LabelSenha: TLabel;
+    EditSenha: TEdit;
+    ButtonSend: TButton;
+    LogoWaPng: TImage;
+    PanelLogin: TPanel;
+    TabCheckIn: TTabSheet;
+    Timer1: TTimer;
+    PanelFerramentasFuncionarios: TPanel;
+    LabelFiltrar: TLabel;
+    EditFiltro: TEdit;
+    ButtonFiltro: TButton;
+    ButtonEditar: TButton;
+    ButtonExcluir: TButton;
+    FlowPanel1: TFlowPanel;
+    ButtonFolha: TButton;
+    Image2: TImage;
+    LabelHorario: TLabel;
+    Label1: TLabel;
+    Label2: TLabel;
+    DBGrid1: TDBGrid;
+    DataSource1: TDataSource;
+    ADOConnection1: TADOConnection;
+    ClientDataSet1: TClientDataSet;
+    DataSetProvider1: TDataSetProvider;
+    ADOQuery1: TADOQuery;
+    ButtonCadastrarAdmin: TButton;
+    TabCadastro: TTabSheet;
+    PanelCadastro: TPanel;
+    LabelUsuarioCadastro: TLabel;
+    LabelNomeCadastro: TLabel;
+    Image3: TImage;
+    EditUsuarioCadastro: TEdit;
+    EditNomeCadastro: TEdit;
+    ButtonCadastrarCadastro: TButton;
+    LabelCargoCadastro: TLabel;
+    EditSenhaCadastro: TEdit;
+    LabelSenhaCadastro: TLabel;
+    ComboBoxCargos: TComboBox;
+    EditCargoCadastro: TEdit;
+    ButtonVoltar: TButton;
+    BoxCargoFuncionario: TComboBox;
+    procedure LabelCadastrarClick(Sender: TObject);
+    procedure LabelFuncionariosClick(Sender: TObject);
+    procedure LabelFolhaClick(Sender: TObject);
+    procedure LabelCheckClick(Sender: TObject);
+    procedure ButtonCadastrarClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure ButtonSendClick(Sender: TObject);
+    procedure LabelSairClick(Sender: TObject);
+    procedure EditSenhaKeyPress(Sender: TObject; var Key: Char);
+    procedure EditSalarioFuncionarioKeyPress(Sender: TObject; var Key: Char);
+    procedure Timer1Timer(Sender: TObject);
+    procedure Image1Click(Sender: TObject);
+    procedure ButtonCadastrarAdminClick(Sender: TObject);
+    procedure ButtonCadastrarCadastroClick(Sender: TObject);
+    procedure ComboBoxCargosChange(Sender: TObject);
+    procedure ButtonVoltarClick(Sender: TObject);
+    function BuscarSaltUsuario(Usuario: string): TBytes;
+    function BuscarHashUsuario(Usuario: string): TBytes;
+    function CadastrarFuncionarios(Nome: string; Cargo: string; Salario: Currency): string;
+    function StringParaCurrency(const Texto: string): Currency;
+  private
+
+  public
+
+  end;
+
+var
+  WaPrincipal: TWaPrincipal;
+
+implementation
+
+{$R *.dfm}
+
+function GerarSalt(Comprimento: Integer): TBytes; //Funcao que gera o Salt recebendo o tamanho
+var
+  I: Integer;
+begin
+  SetLength(Result, Comprimento);
+  for I := 0 to Comprimento - 1 do
+    Result[I] := Random(256);  // Gera valores entre 0 e 256
+end;
+
+function GerarHash(Senha: string; Salt: TBytes): TBytes; //Funcao que gera o hash da senha concatenando senha e salt
+var
+  HashSHA2: THashSHA2;
+  SenhaBytes: TBytes;
+  Digest: TBytes;
+begin
+  // Converte a senha para bytes usando UTF-8
+  SenhaBytes := TEncoding.UTF8.GetBytes(Senha);
+
+  // Inicializa o hash SHA-256
+  HashSHA2 := THashSHA2.Create(SHA256);
+
+  // Alimenta o hash com o Salt e, em seguida, com os bytes da senha
+  HashSHA2.Update(Salt);
+  HashSHA2.Update(SenhaBytes);
+
+  Digest := HashSHA2.HashAsBytes;
+  // Obtém o digest (resultado final)
+  Result := Digest;
+end;
+
+function TWaPrincipal.BuscarSaltUsuario(Usuario: string): TBytes;  //Busca no DB o Salt do usuario
+begin
+  var ADOQuerySalt := TADOQuery.Create(nil);
+  Result := nil;
+  try
+    ADOQuerySalt.Connection := ADOConnection1;
+    ADOQuerySalt.SQL.Add('SELECT Salt FROM ADMINISTRADORES WHERE USUARIO = :Usuario');
+    ADOQuerySalt.Parameters.ParamByName('Usuario').Value := Usuario;
+    ADOQuerySalt.Open;
+
+    if not ADOQuerySalt.IsEmpty then
+    begin
+      Result := ADOQuerySalt.FieldByName('Salt').AsBytes;
+    end
+    else
+    begin
+      ShowMessage('Usuario não encontrado!');
+    end;
+  finally
+    ADOQuerySalt.Free;
+  end;
+end;
+
+function TWaPrincipal.BuscarHashUsuario(Usuario: string): TBytes; //Busca no DB o Hash do Usuario
+begin
+  var ADOQueryHash := TADOQuery.Create(nil);
+  Result := nil;
+  try
+    ADOQueryHash.Connection := ADOConnection1;
+    ADOQueryHash.SQL.Add('SELECT SenhaHash FROM ADMINISTRADORES WHERE USUARIO = :Usuario');
+    ADOQueryHash.Parameters.ParamByName('Usuario').Value := Usuario;
+    ADOQueryHash.Open;
+
+    if not ADOQueryHash.IsEmpty then
+    begin
+      Result := ADOQueryHash.FieldByName('SenhaHash').AsBytes;
+    end
+    else
+    begin
+      ShowMessage('Usuario não encontrado!');
+    end;
+  finally
+    ADOQueryHash.Free;
+  end;
+end;
+
+function TWaPrincipal.CadastrarFuncionarios(Nome: string; Cargo: string; Salario: Currency): string;
+begin
+  try
+    ADOQuery1.Close;
+    ADOQuery1.Connection := ADOConnection1;
+    ADOQuery1.SQL.Add('INSERT INTO FUNCIONARIOS(Nome, Cargo, SalarioDia) VALUES(:Nome, :Cargo, :SalarioDia)');
+    ADOQuery1.Parameters.ParamByName('Nome').Value := Nome;
+    ADOQuery1.Parameters.ParamByName('Cargo').Value := Cargo;
+    ADOQuery1.Parameters.ParamByName('SalarioDia').Value := Salario;
+    ADOQuery1.ExecSQL;
+    ShowMessage('Usuario cadastrado com sucesso!');
+    Result := 'Sucesso';
+  except
+    on E: Exception do
+      ShowMessage('Erro ao cadastrar funcionario: ' + E.Message);
+  end;
+end;
+
+function TWaPrincipal.StringParaCurrency(const Texto: string): Currency;
+begin
+  if not TryStrToCurr(Texto, Result) then
+    raise Exception.CreateFmt(' "%s" não é um valor monetário válido.', [Texto]);
+end;
+
+procedure TWaPrincipal.ButtonSendClick(Sender: TObject);   //Botao Login do Formulario de Login
+var
+  Usuario, Senha: string;
+  Salt, SenhaHashBanco, HashGerado: TBytes;
+begin
+  Usuario := Trim(EditUsuario.Text);
+  Senha := Trim(EditSenha.Text);
+
+  if (Usuario = '') or (Senha = '') then
+  begin
+    ShowMessage('Por favor, preencha todos os campos');
+    Exit;
+  end;
+  Salt := nil;
+  Salt := BuscarSaltUsuario(Usuario);
+  SenhaHashBanco := BuscarHashUsuario(Usuario);
+  HashGerado := GerarHash(Senha, Salt);
+
+  if (Length(HashGerado) = Length(SenhaHashBanco)) and //Compara primeiro o tamanho das array e depois o valor exato byte a byte das variaveis na memoria
+     CompareMem(@HashGerado[0], @SenhaHashBanco[0], Length(HashGerado)) then
+  begin
+    ShowMessage('Login realizado com sucesso!');
+    PageControl1.ActivePage := TabHome;
+    PageControlNav.ActivePage := TabInicio;
+  end
+  else
+  begin
+    ShowMessage('Usuário ou senha incorretos.');
+    Exit;
+  end;
+
+end;
+
+procedure TWaPrincipal.ButtonVoltarClick(Sender: TObject);
+begin
+  PageControl1.ActivePage := TabFormularioLogin;
+  EditUsuarioCadastro.Text := '';
+  EditSenhaCadastro.Text := '';
+  EditNomeCadastro.Text := '';
+  ComboBoxCargos.Text := '';
+  EditCargoCadastro.Text := '';
+
+end;
+
+procedure TWaPrincipal.ComboBoxCargosChange(Sender: TObject);
+var Selecionado: string;
+begin
+  Selecionado := ComboBoxCargos.Text;
+  if (Selecionado = 'Outro') then
+    EditCargoCadastro.Visible := True
+  else
+    EditCargoCadastro.Visible := False;
+end;
+
+//Detecta o Enter (ANSII 13) no EditSalario do Formulario de Cadastro Funcionario
+procedure TWaPrincipal.EditSalarioFuncionarioKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = #13 then
+    begin
+      Key := #0;
+      ButtonCadastrar.Click;
+    end;
+end;
+
+//Detecta o Enter (ANSII 13) no EditSenha do Formulario de Login
+procedure TWaPrincipal.EditSenhaKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = #13 then
+    begin
+      Key := #0;
+      ButtonSend.Click;
+    end;
+
+end;
+
+//Apaga Guias da PageControl1 + Conexao com o SGBD SQLite
+procedure TWaPrincipal.FormCreate(Sender: TObject);
+var i: Integer;
+begin
+  Randomize;
+
+  for I := 0 to PageControl1.PageCount -1 do
+    PageControl1.Pages[i].TabVisible := False;
+  PageControl1.ActivePage := TabFormularioLogin;
+
+end;
+
+procedure TWaPrincipal.Image1Click(Sender: TObject);
+begin
+  PageControlNav.ActivePage := TabInicio;
+end;
+
+//Cadastrar Funcionarios na aba Cadastrar Funcionarios da TabHome
+procedure TWaPrincipal.ButtonCadastrarCadastroClick(Sender: TObject);
+var
+  Usuario, Nome, Cargo, Senha, CargoOutro: string;
+  Salt, SenhaHash: TBytes;
+begin
+  Usuario := Trim(EditUsuarioCadastro.Text);
+  Nome := EditNomeCadastro.Text;
+  Cargo := ComboBoxCargos.Text;
+  CargoOutro := EditCargoCadastro.Text;
+  Senha := EditSenhaCadastro.Text;
+  Salt := GerarSalt(16);
+
+
+  SenhaHash := GerarHash(Senha, Salt); //Gera o hash da senha+salt
+
+  ADOQuery1.Close;
+  ADOQuery1.SQL.Clear;
+  ADOQuery1.SQL.Add('INSERT INTO ADMINISTRADORES(USUARIO, NOME, CARGO, SenhaHash, Salt) VALUES(:Usuario, :Nome, :Cargo, :SenhaHash, :Salt)');
+  ADOQuery1.Parameters.ParamByName('Usuario').Value := Usuario;
+  ADOQuery1.Parameters.ParamByName('Nome').Value := Nome;
+  if (Cargo = 'Outro') then
+    ADOQuery1.Parameters.ParamByName('Cargo').Value := CargoOutro
+  else
+    ADOQuery1.Parameters.ParamByName('Cargo').Value := Cargo;
+  ADOQuery1.Parameters.ParamByName('SenhaHash').Value := SenhaHash;
+  ADOQuery1.Parameters.ParamByName('Salt').Value := Salt;
+  try
+    ADOQuery1.ExecSQL;
+    ShowMessage('Usuario cadastrado com sucesso!');
+    EditUsuarioCadastro.Text := '';
+    EditSenhaCadastro.Text := '';
+    EditNomeCadastro.Text := '';
+    ComboBoxCargos.Text := '';
+    EditCargoCadastro.Text := '';
+  except
+    on E: Exception do
+      ShowMessage('Erro ao cadastrar funcionario: ' + E.Message);
+  end;
+
+end;
+
+procedure TWaPrincipal.ButtonCadastrarAdminClick(Sender: TObject);
+begin
+  PageControl1.ActivePage := TabCadastro;
+end;
+
+procedure TWaPrincipal.ButtonCadastrarClick(Sender: TObject);
+var
+  Nome, Cargo, TextoSalario: string;
+  Salario: Currency;
+begin
+  try
+    Nome := Trim(EditNomeFuncionario.Text);
+    Cargo := BoxCargoFuncionario.Text;
+    TextoSalario := Trim(EditSalarioFuncionario.Text);
+    Salario := StringParaCurrency(TextoSalario); //Transforma a string capturada para currency (Foi a melhor solucao que encontrei para armazenar como decimal(x,2) no banco)
+
+    CadastrarFuncionarios(Nome, Cargo, Salario); //Chama a funcao de cadastro passando os parametros a serem inseridos no DB
+    //Limpa os campos apos o cadastro e da set focus no TabIndex0
+    EditNomeFuncionario.Text := '';
+    BoxCargoFuncionario.Text := '';
+    EditSalarioFuncionario.Text := '';
+    EditNomeFuncionario.SetFocus;
+  except
+    on E: Exception do
+      ShowMessage('Erro: ' + E.Message);
+  end;
+end;
+
+//Abaixo: Eventos Click das Labels contidas no PanelNav
+procedure TWaPrincipal.LabelCadastrarClick(Sender: TObject);
+begin
+  PageControlNav.ActivePage := TabCadastrarFuncionarios;
+end;
+
+
+//Carrega a tabela FUNCIONARIOS do db
+procedure TWaPrincipal.LabelFuncionariosClick(Sender: TObject);
+begin
+  PageControlNav.ActivePage := TabFuncionarios;
+end;
+
+//Botao sair do PanelNav em TabHome
+procedure TWaPrincipal.LabelSairClick(Sender: TObject);
+begin
+  EditUsuario.Text := '';
+  EditSenha.Text := '';
+  ShowMessage ('Voce Saiu!');
+  PageControl1.ActivePage := TabFormularioLogin;
+
+end;
+
+procedure TWaPrincipal.Timer1Timer(Sender: TObject);
+begin
+  LabelHorario.Caption := TimeToStr(Now);
+end;
+
+procedure TWaPrincipal.LabelFolhaClick(Sender: TObject);
+begin
+  PageControlNav.ActivePage := TabFolhaDePonto;
+end;
+
+procedure TWaPrincipal.LabelCheckClick(Sender: TObject);
+begin
+  PageControlNav.ActivePage := TabCheckIn;
+end;
+
+end.

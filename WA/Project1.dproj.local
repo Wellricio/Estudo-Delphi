@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2025/01/08 11:39:36.000.071,=C:\Users\mswel\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2025/01/08 11:39:51.000.236,C:\Users\mswel\Documents\Embarcadero\Studio\Projects\Unit1.pas=C:\Users\mswel\Documents\Embarcadero\Studio\Projects\WA\Unit1.pas</Transaction>
+    <Transaction>2025/01/08 11:39:51.000.236,C:\Users\mswel\Documents\Embarcadero\Studio\Projects\Unit1.dfm=C:\Users\mswel\Documents\Embarcadero\Studio\Projects\WA\Unit1.dfm</Transaction>
+    <Transaction>2025/01/08 13:56:56.000.730,C:\Users\mswel\Documents\Embarcadero\Studio\Projects\Project1.dproj=C:\Users\mswel\Documents\Embarcadero\Studio\Projects\WA\Project1.dproj</Transaction>
+    <Transaction>2025/01/08 20:08:29.000.299,=C:\Users\mswel\Documents\Embarcadero\Studio\Projects\WA\Unit2.pas</Transaction>
+    <Transaction>2025/01/09 11:38:30.000.845,=C:\Users\mswel\Documents\Embarcadero\Studio\Projects\WA\Unit3.pas</Transaction>
+    <Transaction>2025/01/18 18:30:56.000.839,C:\Users\mswel\Documents\Embarcadero\Studio\Projects\WA\ControleDePonto.dfm=C:\Users\mswel\Documents\Embarcadero\Studio\Projects\WA\Unit2.dfm</Transaction>
+    <Transaction>2025/01/18 18:30:56.000.839,C:\Users\mswel\Documents\Embarcadero\Studio\Projects\WA\ControleDePonto.pas=C:\Users\mswel\Documents\Embarcadero\Studio\Projects\WA\Unit2.pas</Transaction>
+    <Transaction>2025/01/18 18:31:09.000.892,=C:\Users\mswel\Documents\Embarcadero\Studio\Projects\WA\Unit2.pas</Transaction>
+    <Transaction>2025/01/18 18:34:36.000.030,=C:\Users\mswel\Documents\Embarcadero\Studio\Projects\WA\Unit2.pas</Transaction>
+    <Transaction>2025/01/18 20:13:00.000.950,C:\Users\mswel\Documents\Embarcadero\Studio\Projects\WA\RelatorioFolha.pas=C:\Users\mswel\Documents\Embarcadero\Studio\Projects\WA\Unit2.pas</Transaction>
+    <Transaction>2025/01/18 20:13:00.000.950,C:\Users\mswel\Documents\Embarcadero\Studio\Projects\WA\RelatorioFolha.dfm=C:\Users\mswel\Documents\Embarcadero\Studio\Projects\WA\Unit2.dfm</Transaction>
+  </Transactions>
+</BorlandProject>
