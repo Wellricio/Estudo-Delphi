@@ -4,3 +4,5 @@
   que são amplamente utilizados no desenvolvimento de software desktop. Meu objetivo principal com este projeto foi 
   explorar o potencial dessas ferramentas e aprender a lidar com desafios como conexão com banco de dados, interfaces 
   gráficas e execução local.
+
+Formulario Principal := ControleDePonto.pas
