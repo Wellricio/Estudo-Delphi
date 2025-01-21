@@ -169,7 +169,7 @@ begin
   HashSHA2.Update(SenhaBytes);
 
   Digest := HashSHA2.HashAsBytes;
-  // ObtÈm o digest (resultado final)
+  // Obt√©m o digest (resultado final)
   Result := Digest;
 end;
 
@@ -189,7 +189,7 @@ begin
     end
     else
     begin
-      ShowMessage('Usuario n„o encontrado!');
+      ShowMessage('Usuario n√£o encontrado!');
     end;
   finally
     ADOQuerySalt.Free;
@@ -212,7 +212,7 @@ begin
     end
     else
     begin
-      ShowMessage('Usuario n„o encontrado!');
+      ShowMessage('Usuario n√£o encontrado!');
     end;
   finally
     ADOQueryHash.Free;
@@ -223,6 +223,7 @@ function TWaPrincipal.CadastrarFuncionarios(Nome: string; Cargo: string; Salario
 begin
   try
     ADOQuery1.Connection := ADOConnection1;
+    ADOQuery1.SQL.Clear;
     ADOQuery1.SQL.Add('INSERT INTO FUNCIONARIOS(Nome, Cargo, SalarioDia) VALUES(:Nome, :Cargo, :SalarioDia)');
     ADOQuery1.Parameters.ParamByName('Nome').Value := Nome;
     ADOQuery1.Parameters.ParamByName('Cargo').Value := Cargo;
@@ -239,7 +240,7 @@ end;
 function TWaPrincipal.StringParaCurrency(const Texto: string): Currency;
 begin
   if not TryStrToCurr(Texto, Result) then
-    raise Exception.CreateFmt(' "%s" n„o È um valor monet·rio v·lido.', [Texto]);
+    raise Exception.CreateFmt(' "%s" n√£o √© um valor monet√°rio v√°lido.', [Texto]);
 end;
 
 function TWaPrincipal.ResgatarDeFuncionario(Funcionario: string): string; //Resgata tudo da tabela FUNCIONARIOS de um funcionario expecifico
@@ -253,7 +254,7 @@ begin
     ADOQueryFolhaFuncionario.Open;
   except
     on E:Exception do
-      ShowMessage('N„o foi possivel resgatar dados do funcionario, erro: ' + E.Message);
+      ShowMessage('N√£o foi possivel resgatar dados do funcionario, erro: ' + E.Message);
   end;
 end;
 
@@ -299,7 +300,7 @@ begin
     'SELECT HoraRegistro, DataRegistro ' +
     'FROM RegistrosPonto ' +
     'WHERE FuncionarioId = :FuncionarioId ' +
-    'AND TipoRegistro = ''SaÌda'' ' +
+    'AND TipoRegistro = ''Sa√≠da'' ' +
     'AND MONTH(DataRegistro) = :Mes ' +
     'AND YEAR(DataRegistro) = :Ano ' +
     'ORDER BY DataRegistro, HoraRegistro';
@@ -336,7 +337,7 @@ begin
   end
   else
   begin
-    ShowMessage('Usu·rio ou senha incorretos.');
+    ShowMessage('Usu√°rio ou senha incorretos.');
     Exit;
   end;
 
@@ -385,20 +386,20 @@ var
   EspacoEntreLinhas: Integer;
   LinhaRect: TRect;
 begin
-  EspacoEntreLinhas := 0; // Define a margem (espaÁo entre as linhas)
+  EspacoEntreLinhas := 0; // Define a margem (espa√ßo entre as linhas)
 
-  // Ajusta o ret‚ngulo da linha para criar o espaÁo inferior
+  // Ajusta o ret√¢ngulo da linha para criar o espa√ßo inferior
   LinhaRect := Rect;
   LinhaRect.Bottom := LinhaRect.Bottom - EspacoEntreLinhas;
 
   // Preenche o fundo da linha
   if Odd(DBGrid1.DataSource.DataSet.RecNo) then
-    DBGrid1.Canvas.Brush.Color := clGradientInactiveCaption // Cor para linhas Ìmpares
+    DBGrid1.Canvas.Brush.Color := clGradientInactiveCaption // Cor para linhas √≠mpares
   else
     DBGrid1.Canvas.Brush.Color := clWhite; // Cor para linhas pares
   DBGrid1.Canvas.FillRect(LinhaRect);
 
-  // Desenha o texto da cÈlula no ret‚ngulo ajustado
+  // Desenha o texto da c√©lula no ret√¢ngulo ajustado
   DBGrid1.DefaultDrawColumnCell(LinhaRect, DataCol, Column, State);
 end;
 
@@ -476,6 +477,7 @@ begin
     EditNomeCadastro.Text := '';
     ComboBoxCargos.Text := '';
     EditCargoCadastro.Text := '';
+    ADOQuery1.Close;
   except
     on E: Exception do
       ShowMessage('Erro ao cadastrar funcionario: ' + E.Message);
@@ -533,7 +535,7 @@ begin
   if (TotalRegistros mod 2 = 0) then
     TipoDeRegistro := 'Entrada'
   else
-    TipoDeRegistro := 'SaÌda';
+    TipoDeRegistro := 'Sa√≠da';
 
   AlimentarRegistrosPonto(IdSelecionado, TipoDeRegistro);
 end;
@@ -543,19 +545,19 @@ var
   I: Integer;
   ReadOnlyState: Boolean;
 begin
-  // Use a segunda coluna (index 1) como referÍncia para o estado de ReadOnly
+  // Use a segunda coluna (index 1) como refer√™ncia para o estado de ReadOnly
   ReadOnlyState := DBGrid1.Columns[ 1].ReadOnly;
   // Alterna o estado de ReadOnly para todas as colunas
   for I := 0 to DBGrid1.Columns.Count - 1 do
   begin
-    // MantÈm a coluna "ID" (index 0) como somente leitura
+    // Mant√©m a coluna "ID" (index 0) como somente leitura
     if DBGrid1.Columns[I].FieldName = 'ID' then
       DBGrid1.Columns[I].ReadOnly := True
     else
       DBGrid1.Columns[I].ReadOnly := not ReadOnlyState; // Alterna o estado
   end;
 
-  // Atualiza o texto do bot„o para indicar o estado atual
+  // Atualiza o texto do bot√£o para indicar o estado atual
   if ReadOnlyState then
     ButtonEditar.Caption := 'Salvar'
   else
