@@ -126,6 +126,7 @@ type
     function AlimentarRegistrosPonto(FuncionarioId: Integer; TipoDeRegistro: string): string;
     function BuscaRegistroPontoEntrada(FuncionarioId: Integer; Mes: Integer; Ano: Integer): string;
     function BuscaRegistroPontoSaida(FuncionarioId: Integer; Mes: Integer; Ano: Integer): string;
+    function CadastrarAdmnistrador(Nome: string; Cargo: string; CargoAlt: string; Usuario: string; Senha: TBytes; Salt: TBytes): string;
     procedure ButtonCheckInClick(Sender: TObject);
   private
     NomeSelecionado: string; //Variavel global que guarda um record da coluna Nome do DBGrid1
@@ -169,7 +170,7 @@ begin
   HashSHA2.Update(SenhaBytes);
 
   Digest := HashSHA2.HashAsBytes;
-  // Obt√©m o digest (resultado final)
+  // ObtÈm o digest (resultado final)
   Result := Digest;
 end;
 
@@ -189,7 +190,7 @@ begin
     end
     else
     begin
-      ShowMessage('Usuario n√£o encontrado!');
+      ShowMessage('Usuario n„o encontrado!');
     end;
   finally
     ADOQuerySalt.Free;
@@ -212,7 +213,7 @@ begin
     end
     else
     begin
-      ShowMessage('Usuario n√£o encontrado!');
+      ShowMessage('Usuario n„o encontrado!');
     end;
   finally
     ADOQueryHash.Free;
@@ -240,7 +241,7 @@ end;
 function TWaPrincipal.StringParaCurrency(const Texto: string): Currency;
 begin
   if not TryStrToCurr(Texto, Result) then
-    raise Exception.CreateFmt(' "%s" n√£o √© um valor monet√°rio v√°lido.', [Texto]);
+    raise Exception.CreateFmt(' "%s" n„o È um valor monet·rio v·lido.', [Texto]);
 end;
 
 function TWaPrincipal.ResgatarDeFuncionario(Funcionario: string): string; //Resgata tudo da tabela FUNCIONARIOS de um funcionario expecifico
@@ -254,7 +255,7 @@ begin
     ADOQueryFolhaFuncionario.Open;
   except
     on E:Exception do
-      ShowMessage('N√£o foi possivel resgatar dados do funcionario, erro: ' + E.Message);
+      ShowMessage('N„o foi possivel resgatar dados do funcionario, erro: ' + E.Message);
   end;
 end;
 
@@ -300,7 +301,7 @@ begin
     'SELECT HoraRegistro, DataRegistro ' +
     'FROM RegistrosPonto ' +
     'WHERE FuncionarioId = :FuncionarioId ' +
-    'AND TipoRegistro = ''Sa√≠da'' ' +
+    'AND TipoRegistro = ''SaÌda'' ' +
     'AND MONTH(DataRegistro) = :Mes ' +
     'AND YEAR(DataRegistro) = :Ano ' +
     'ORDER BY DataRegistro, HoraRegistro';
@@ -308,6 +309,32 @@ begin
   ADOQuerySaida.Parameters.ParamByName('Mes').Value := Mes;
   ADOQuerySaida.Parameters.ParamByName('Ano').Value := Ano;
   ADOQuerySaida.Open;
+end;
+
+function TWaPrincipal.CadastrarAdmnistrador(Nome: string; Cargo: string; CargoAlt: string; Usuario: string; Senha: TBytes; Salt: TBytes): string;
+//Cadastra um usuario ADMINISTRADOR no banco de dados
+begin
+  ADOQuery1.Close;
+  ADOQuery1.SQL.Clear;
+  ADOQuery1.SQL.Add('INSERT INTO ADMINISTRADORES(NOME, CARGO, USUARIO, SenhaHash, Salt) VALUES(:Nome, :Cargo, :Usuario, :SenhaHash, :Salt)');
+  ADOQuery1.Parameters.ParamByName('Nome').Value := Nome;
+
+  if (Cargo = 'Outro') then  //Verifica o valor do parametro Cargo
+    ADOQuery1.Parameters.ParamByName('Cargo').Value := CargoAlt  //se true o banco guarda CargoAlt em CARGO
+  else
+    ADOQuery1.Parameters.ParamByName('Cargo').Value := Cargo;
+
+  ADOQuery1.Parameters.ParamByName('Usuario').Value := Usuario;
+  ADOQuery1.Parameters.ParamByName('SenhaHash').Value := Senha;
+  ADOQuery1.Parameters.ParamByName('Salt').Value := Salt;
+  try
+    ADOQuery1.ExecSQL;
+    ShowMessage('Usuario cadastrado com sucesso!');
+    ADOQuery1.Close;
+  except
+    on E: Exception do
+      ShowMessage('Erro ao cadastrar funcionario: ' + E.Message);
+  end;
 end;
 
 procedure TWaPrincipal.ButtonSendClick(Sender: TObject);   //Botao Login do Formulario de Login
@@ -337,7 +364,7 @@ begin
   end
   else
   begin
-    ShowMessage('Usu√°rio ou senha incorretos.');
+    ShowMessage('Usu·rio ou senha incorretos.');
     Exit;
   end;
 
@@ -386,20 +413,20 @@ var
   EspacoEntreLinhas: Integer;
   LinhaRect: TRect;
 begin
-  EspacoEntreLinhas := 0; // Define a margem (espa√ßo entre as linhas)
+  EspacoEntreLinhas := 0; // Define a margem (espaÁo entre as linhas)
 
-  // Ajusta o ret√¢ngulo da linha para criar o espa√ßo inferior
+  // Ajusta o ret‚ngulo da linha para criar o espaÁo inferior
   LinhaRect := Rect;
   LinhaRect.Bottom := LinhaRect.Bottom - EspacoEntreLinhas;
 
   // Preenche o fundo da linha
   if Odd(DBGrid1.DataSource.DataSet.RecNo) then
-    DBGrid1.Canvas.Brush.Color := clGradientInactiveCaption // Cor para linhas √≠mpares
+    DBGrid1.Canvas.Brush.Color := clGradientInactiveCaption // Cor para linhas Ìmpares
   else
     DBGrid1.Canvas.Brush.Color := clWhite; // Cor para linhas pares
   DBGrid1.Canvas.FillRect(LinhaRect);
 
-  // Desenha o texto da c√©lula no ret√¢ngulo ajustado
+  // Desenha o texto da cÈlula no ret‚ngulo ajustado
   DBGrid1.DefaultDrawColumnCell(LinhaRect, DataCol, Column, State);
 end;
 
@@ -454,35 +481,15 @@ begin
   CargoOutro := EditCargoCadastro.Text;
   Senha := EditSenhaCadastro.Text;
   Salt := GerarSalt(16);
-
-
   SenhaHash := GerarHash(Senha, Salt); //Gera o hash da senha+salt
 
-  ADOQuery1.Close;
-  ADOQuery1.SQL.Clear;
-  ADOQuery1.SQL.Add('INSERT INTO ADMINISTRADORES(USUARIO, NOME, CARGO, SenhaHash, Salt) VALUES(:Usuario, :Nome, :Cargo, :SenhaHash, :Salt)');
-  ADOQuery1.Parameters.ParamByName('Usuario').Value := Usuario;
-  ADOQuery1.Parameters.ParamByName('Nome').Value := Nome;
-  if (Cargo = 'Outro') then
-    ADOQuery1.Parameters.ParamByName('Cargo').Value := CargoOutro
-  else
-    ADOQuery1.Parameters.ParamByName('Cargo').Value := Cargo;
-  ADOQuery1.Parameters.ParamByName('SenhaHash').Value := SenhaHash;
-  ADOQuery1.Parameters.ParamByName('Salt').Value := Salt;
-  try
-    ADOQuery1.ExecSQL;
-    ShowMessage('Usuario cadastrado com sucesso!');
-    EditUsuarioCadastro.Text := '';
-    EditSenhaCadastro.Text := '';
-    EditNomeCadastro.Text := '';
-    ComboBoxCargos.Text := '';
-    EditCargoCadastro.Text := '';
-    ADOQuery1.Close;
-  except
-    on E: Exception do
-      ShowMessage('Erro ao cadastrar funcionario: ' + E.Message);
-  end;
+  CadastrarAdmnistrador(Nome, Cargo, CargoOutro, Usuario, SenhaHash, Salt);  //Cadastra o administrador
 
+  EditUsuarioCadastro.Text := '';
+  EditSenhaCadastro.Text := '';
+  EditNomeCadastro.Text := '';
+  ComboBoxCargos.Text := '';
+  EditCargoCadastro.Text := '';
 end;
 
 procedure TWaPrincipal.ButtonCadastrarAdminClick(Sender: TObject);
@@ -535,7 +542,7 @@ begin
   if (TotalRegistros mod 2 = 0) then
     TipoDeRegistro := 'Entrada'
   else
-    TipoDeRegistro := 'Sa√≠da';
+    TipoDeRegistro := 'SaÌda';
 
   AlimentarRegistrosPonto(IdSelecionado, TipoDeRegistro);
 end;
@@ -545,19 +552,19 @@ var
   I: Integer;
   ReadOnlyState: Boolean;
 begin
-  // Use a segunda coluna (index 1) como refer√™ncia para o estado de ReadOnly
+  // Use a segunda coluna (index 1) como referÍncia para o estado de ReadOnly
   ReadOnlyState := DBGrid1.Columns[ 1].ReadOnly;
   // Alterna o estado de ReadOnly para todas as colunas
   for I := 0 to DBGrid1.Columns.Count - 1 do
   begin
-    // Mant√©m a coluna "ID" (index 0) como somente leitura
+    // MantÈm a coluna "ID" (index 0) como somente leitura
     if DBGrid1.Columns[I].FieldName = 'ID' then
       DBGrid1.Columns[I].ReadOnly := True
     else
       DBGrid1.Columns[I].ReadOnly := not ReadOnlyState; // Alterna o estado
   end;
 
-  // Atualiza o texto do bot√£o para indicar o estado atual
+  // Atualiza o texto do bot„o para indicar o estado atual
   if ReadOnlyState then
     ButtonEditar.Caption := 'Salvar'
   else

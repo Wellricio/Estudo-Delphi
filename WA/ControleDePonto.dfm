@@ -495,7 +495,7 @@ object WaPrincipal: TWaPrincipal
     Margins.Top = 0
     Margins.Right = 0
     Margins.Bottom = 0
-    ActivePage = TabHome
+    ActivePage = TabCadastro
     Align = alClient
     TabOrder = 0
     object TabFormularioLogin: TTabSheet
@@ -8420,7 +8420,7 @@ object WaPrincipal: TWaPrincipal
         Margins.Top = 0
         Margins.Right = 0
         Margins.Bottom = 0
-        ActivePage = TabFuncionarios
+        ActivePage = TabCadastrarFuncionarios
         Align = alClient
         TabOrder = 0
         object TabInicio: TTabSheet
@@ -16283,7 +16283,6 @@ object WaPrincipal: TWaPrincipal
               Align = alTop
               BevelOuter = bvNone
               TabOrder = 0
-              ExplicitTop = 246
               object Label1: TLabel
                 Left = 0
                 Top = 0
@@ -16302,8 +16301,8 @@ object WaPrincipal: TWaPrincipal
               object Label3: TLabel
                 Left = 1
                 Top = 44
-                Width = 32
-                Height = 29
+                Width = 29
+                Height = 21
                 Caption = 'M'#234's'
                 Color = 16112294
                 Font.Charset = DEFAULT_CHARSET
@@ -16317,8 +16316,8 @@ object WaPrincipal: TWaPrincipal
               object Label4: TLabel
                 Left = 138
                 Top = 44
-                Width = 31
-                Height = 28
+                Width = 28
+                Height = 21
                 Caption = 'Ano'
                 Color = 16112294
                 Font.Charset = DEFAULT_CHARSET
@@ -16347,9 +16346,6 @@ object WaPrincipal: TWaPrincipal
                 WordWrap = True
                 StyleName = 'Windows'
                 OnClick = ButtonFolhaClick
-                ExplicitLeft = 1
-                ExplicitTop = 111
-                ExplicitWidth = 278
               end
               object ComboBoxMes: TComboBox
                 Left = 1
@@ -16400,8 +16396,6 @@ object WaPrincipal: TWaPrincipal
               Align = alTop
               BevelOuter = bvNone
               TabOrder = 1
-              ExplicitLeft = 7
-              ExplicitTop = 2
               object LabelFiltrar: TLabel
                 AlignWithMargins = True
                 Left = 0
@@ -16420,8 +16414,6 @@ object WaPrincipal: TWaPrincipal
                 Font.Name = 'Segoe UI'
                 Font.Style = [fsBold]
                 ParentFont = False
-                ExplicitLeft = 1
-                ExplicitTop = 10
                 ExplicitWidth = 40
               end
               object ButtonFiltro: TButton
@@ -16438,7 +16430,6 @@ object WaPrincipal: TWaPrincipal
                 Caption = 'Filtrar'
                 TabOrder = 0
                 StyleName = 'Windows'
-                ExplicitTop = 103
               end
               object EditFiltro: TEdit
                 AlignWithMargins = True
@@ -16459,7 +16450,6 @@ object WaPrincipal: TWaPrincipal
                 ParentFont = False
                 TabOrder = 1
                 TextHint = 'ID, Nome, Cargo, Sal'#225'rio'
-                ExplicitTop = 36
               end
             end
             object PanelFerramentasCrud: TPanel
@@ -16475,8 +16465,6 @@ object WaPrincipal: TWaPrincipal
               Align = alTop
               BevelOuter = bvNone
               TabOrder = 2
-              ExplicitLeft = 11
-              ExplicitTop = 332
               object Label5: TLabel
                 AlignWithMargins = True
                 Left = 0
@@ -16495,8 +16483,6 @@ object WaPrincipal: TWaPrincipal
                 Font.Name = 'Segoe UI'
                 Font.Style = [fsBold]
                 ParentFont = False
-                ExplicitLeft = 1
-                ExplicitTop = 1
                 ExplicitWidth = 172
               end
               object ButtonEditar: TButton
@@ -16515,8 +16501,6 @@ object WaPrincipal: TWaPrincipal
                 WordWrap = True
                 StyleName = 'Windows'
                 OnClick = ButtonEditarClick
-                ExplicitLeft = 1
-                ExplicitTop = 1
               end
               object ButtonExcluir: TButton
                 AlignWithMargins = True
@@ -16535,8 +16519,6 @@ object WaPrincipal: TWaPrincipal
                 TabOrder = 1
                 WordWrap = True
                 StyleName = 'Windows'
-                ExplicitLeft = 144
-                ExplicitTop = 1
               end
             end
             object PanelCheck: TPanel
@@ -16577,7 +16559,7 @@ object WaPrincipal: TWaPrincipal
                 Left = 0
                 Top = 31
                 Width = 280
-                Height = 30
+                Height = 23
                 Margins.Left = 0
                 Margins.Top = 0
                 Margins.Right = 0
@@ -16604,7 +16586,6 @@ object WaPrincipal: TWaPrincipal
                 TabOrder = 1
                 StyleName = 'Windows'
                 OnClick = ButtonCheckInClick
-                ExplicitTop = 165
               end
             end
           end
