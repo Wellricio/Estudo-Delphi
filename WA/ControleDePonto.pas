@@ -514,9 +514,7 @@ begin
     BoxCargoFuncionario.Text := '';
     EditSalarioFuncionario.Text := '';
     EditNomeFuncionario.SetFocus;
-  except
-    on E: Exception do
-      ShowMessage('Erro: ' + E.Message);
+  finally
   end;
 end;
 
