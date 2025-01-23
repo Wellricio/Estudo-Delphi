@@ -40,6 +40,7 @@ type
     RLDBText5: TRLDBText;
     RLDBText6: TRLDBText;
     RLDBText7: TRLDBText;
+    RLBand4: TRLBand;
   private
     { Private declarations }
   public

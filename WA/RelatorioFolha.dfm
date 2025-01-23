@@ -205,51 +205,12 @@ object Form2: TForm2
     end
     object RLBand2: TRLBand
       Left = 38
-      Top = 201
+      Top = 225
       Width = 718
-      Height = 632
-      object RLLabel8: TRLLabel
-        Left = 16
-        Top = 6
-        Width = 39
-        Height = 16
-        Caption = 'DATA'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object RLLabel9: TRLLabel
-        Left = 192
-        Top = 6
-        Width = 65
-        Height = 16
-        Caption = 'ENTRADA'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object RLLabel10: TRLLabel
-        Left = 376
-        Top = 6
-        Width = 44
-        Height = 16
-        Caption = 'SAIDA'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clBlack
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
+      Height = 24
       object RLDBText5: TRLDBText
         Left = 16
-        Top = 40
+        Top = 6
         Width = 79
         Height = 16
         DataField = 'DataRegistro'
@@ -258,7 +219,7 @@ object Form2: TForm2
       end
       object RLDBText6: TRLDBText
         Left = 192
-        Top = 40
+        Top = 6
         Width = 79
         Height = 16
         DataField = 'HoraRegistro'
@@ -267,7 +228,7 @@ object Form2: TForm2
       end
       object RLDBText7: TRLDBText
         Left = 376
-        Top = 40
+        Top = 6
         Width = 79
         Height = 16
         DataField = 'HoraRegistro'
@@ -277,7 +238,7 @@ object Form2: TForm2
     end
     object RLBand3: TRLBand
       Left = 38
-      Top = 833
+      Top = 249
       Width = 718
       Height = 251
       BandType = btFooter
@@ -342,6 +303,52 @@ object Form2: TForm2
         Height = 16
         Alignment = taCenter
         Caption = 'Assinatura Empregador'
+      end
+    end
+    object RLBand4: TRLBand
+      Left = 38
+      Top = 201
+      Width = 718
+      Height = 24
+      BandType = btTitle
+      object RLLabel10: TRLLabel
+        Left = 376
+        Top = 6
+        Width = 44
+        Height = 16
+        Caption = 'SAIDA'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object RLLabel8: TRLLabel
+        Left = 16
+        Top = 6
+        Width = 39
+        Height = 16
+        Caption = 'DATA'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object RLLabel9: TRLLabel
+        Left = 192
+        Top = 6
+        Width = 65
+        Height = 16
+        Caption = 'ENTRADA'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = [fsBold]
+        ParentFont = False
       end
     end
   end
