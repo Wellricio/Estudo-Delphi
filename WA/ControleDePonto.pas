@@ -97,6 +97,8 @@ type
     ADOQuerySaida: TADOQuery;
     DataSourceEntrada: TDataSource;
     DataSourceSaida: TDataSource;
+    ADOQueryRegistrosPonto: TADOQuery;
+    DataSourceRegistrosPonto: TDataSource;
     procedure LabelCadastrarClick(Sender: TObject);
     procedure LabelFuncionariosClick(Sender: TObject);
     procedure LabelFolhaClick(Sender: TObject);
@@ -124,13 +126,15 @@ type
     procedure DBGrid1CellClick(Column: TColumn);
     function ResgatarDeFuncionario(Funcionario: string): string;
     function AlimentarRegistrosPonto(FuncionarioId: Integer; TipoDeRegistro: string): string;
-    function BuscaRegistroPontoEntrada(FuncionarioId: Integer; Mes: Integer; Ano: Integer): string;
-    function BuscaRegistroPontoSaida(FuncionarioId: Integer; Mes: Integer; Ano: Integer): string;
+    //function BuscaRegistroPonto(FuncionarioId: Integer; Mes: Integer; Ano: Integer): string;
+    //function BuscaRegistroPontoEntrada(FuncionarioId: Integer; Mes: Integer; Ano: Integer): string;
+    //function BuscaRegistroPontoSaida(FuncionarioId: Integer; Mes: Integer; Ano: Integer): string;
     function CadastrarAdmnistrador(Nome: string; Cargo: string; CargoAlt: string; Usuario: string; Senha: TBytes; Salt: TBytes): string;
     procedure ButtonCheckInClick(Sender: TObject);
   private
     NomeSelecionado: string; //Variavel global que guarda um record da coluna Nome do DBGrid1
     IdSelecionado: Integer;  //Variavel global que guarda um record da coluna ID do DBGrid1
+    Mes, Ano: Integer;
   public
 
   end;
@@ -276,6 +280,36 @@ begin
       ShowMessage('Erro ao registrar ponto: ' + E.Message);
   end;
 end;
+{
+function TWaPrincipal.BuscaRegistroPonto(FuncionarioId: Integer; Mes: Integer; Ano: Integer): string;
+begin
+  ADOQueryRegistrosPonto.Close;
+  //A seguir veras a maior brutalidade cometida contra o SQL
+  //Vou executar este codigo agora, quais sao as probabilidades disto funcionario? Volto ja e lhe conto se funcionou ou nao
+  ADOQueryRegistrosPonto.SQL.Text :=
+  'SELECT ' +
+  'CASE ' +
+  'WHEN TipoRegistro = ''Entrada'' THEN DataRegistro ' +
+  'ELSE NULL ' +
+  'END AS RegistroEntrada ' +
+  'CASE ' +
+  'WHEN TipoRegistro = ''Entrada'' THEN HoraRegistro ' +
+  'ELSE NULL ' +
+  'END AS HoraEntrada ' +
+  'CASE ' +
+  'WHEN TipoRegistro = ''Saída'' THEN HoraRegistro ' +
+  'ELSE NULL ' +
+  'END AS HoraSaida ' +
+  'FROM RegistrosPonto ' +
+  'WHERE FuncionarioId = :FuncionarioId ' +
+  'AND MONTH(DataRegistro) = :Mes ' +
+  'AND YEAR(DataRegistro) = :Ano ' +
+  'AND (TipoRegistro = ''Entrada'' OR TipoRegistro = ''Saída'')';
+  ADOQuery1.Parameters.ParamByName('FuncionarioId').Value := FuncionarioId;
+  ADOQuery1.Parameters.ParamByName('Mes').Value := Mes;
+  ADOQuery1.Parameters.ParamByName('Ano').Value := Ano;
+  ADOQueryRegistrosPonto.Open;
+end;
 
 function TWaPrincipal.BuscaRegistroPontoEntrada(FuncionarioId: Integer; Mes: Integer; Ano: Integer): string;
 begin
@@ -310,7 +344,7 @@ begin
   ADOQuerySaida.Parameters.ParamByName('Ano').Value := Ano;
   ADOQuerySaida.Open;
 end;
-
+ }
 function TWaPrincipal.CadastrarAdmnistrador(Nome: string; Cargo: string; CargoAlt: string; Usuario: string; Senha: TBytes; Salt: TBytes): string;
 //Cadastra um usuario ADMINISTRADOR no banco de dados
 begin
@@ -572,15 +606,40 @@ end;
 procedure TWaPrincipal.ButtonFolhaClick(Sender: TObject);
 var
   DadosFuncionario: string;
-  Mes, Ano: Integer;
 begin
   Mes := StrToInt(ComboBoxMes.Text);
   Ano := StrToInt(ComboBoxAno.Text);
   DadosFuncionario := ResgatarDeFuncionario(NomeSelecionado);
-
+  {
+  BuscaRegistroPonto(IdSelecionado, Mes, Ano);
   BuscaRegistroPontoEntrada(IdSelecionado, Mes, Ano);
   BuscaRegistroPontoSaida(IdSelecionado, Mes, Ano);
-
+  }
+  //fINALMENTE APRENDI DE UMA FORMA QUE FUNCIONAAAAAAAA
+  ADOQueryRegistrosPonto.Close;
+  ADOQueryRegistrosPonto.SQL.Text :=
+    'SELECT ' +
+    '    CASE ' +
+    '        WHEN TipoRegistro = ''Entrada'' THEN DataRegistro ' +
+    '        ELSE NULL ' +
+    '    END AS RegistroEntrada, ' +
+    '    CASE ' +
+    '        WHEN TipoRegistro = ''Entrada'' THEN HoraRegistro ' +
+    '        ELSE NULL ' +
+    '    END AS HoraEntrada, ' +
+    '    CASE ' +
+    '        WHEN TipoRegistro = ''Saída'' THEN HoraRegistro ' +
+    '        ELSE NULL ' +
+    '    END AS HoraSaida ' +
+    'FROM RegistrosPonto ' +
+    'WHERE FuncionarioId = :FuncionarioId ' +
+    '  AND MONTH(DataRegistro) = :Mes ' +
+    '  AND YEAR(DataRegistro) = :Ano ' +
+    '  AND (TipoRegistro = ''Entrada'' OR TipoRegistro = ''Saída'')';
+  ADOQueryRegistrosPonto.Parameters.ParamByName('FuncionarioId').Value := IdSelecionado;
+  ADOQueryRegistrosPonto.Parameters.ParamByName('Mes').Value := Mes;
+  ADOQueryRegistrosPonto.Parameters.ParamByName('Ano').Value := Ano;
+  ADOQueryRegistrosPonto.Open;
   Form2.ReportFolhaPonto.Preview();
 end;
 

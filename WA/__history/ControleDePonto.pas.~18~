@@ -125,6 +125,8 @@ type
     function ResgatarDeFuncionario(Funcionario: string): string;
     function AlimentarRegistrosPonto(FuncionarioId: Integer; TipoDeRegistro: string): string;
     function BuscaRegistroPontoEntrada(FuncionarioId: Integer; Mes: Integer; Ano: Integer): string;
+    function BuscaRegistroPontoSaida(FuncionarioId: Integer; Mes: Integer; Ano: Integer): string;
+    function CadastrarAdmnistrador(Nome: string; Cargo: string; CargoAlt: string; Usuario: string; Senha: TBytes; Salt: TBytes): string;
     procedure ButtonCheckInClick(Sender: TObject);
   private
     NomeSelecionado: string; //Variavel global que guarda um record da coluna Nome do DBGrid1
@@ -222,6 +224,7 @@ function TWaPrincipal.CadastrarFuncionarios(Nome: string; Cargo: string; Salario
 begin
   try
     ADOQuery1.Connection := ADOConnection1;
+    ADOQuery1.SQL.Clear;
     ADOQuery1.SQL.Add('INSERT INTO FUNCIONARIOS(Nome, Cargo, SalarioDia) VALUES(:Nome, :Cargo, :SalarioDia)');
     ADOQuery1.Parameters.ParamByName('Nome').Value := Nome;
     ADOQuery1.Parameters.ParamByName('Cargo').Value := Cargo;
@@ -289,6 +292,49 @@ begin
   ADOQueryEntrada.Parameters.ParamByName('Mes').Value := Mes;
   ADOQueryEntrada.Parameters.ParamByName('Ano').Value := Ano;
   ADOQueryEntrada.Open;
+end;
+
+function TWaPrincipal.BuscaRegistroPontoSaida(FuncionarioId: Integer; Mes: Integer; Ano: Integer): string;
+begin
+  ADOQuerySaida.Close;
+  ADOQuerySaida.SQL.Text :=
+    'SELECT HoraRegistro, DataRegistro ' +
+    'FROM RegistrosPonto ' +
+    'WHERE FuncionarioId = :FuncionarioId ' +
+    'AND TipoRegistro = ''Saída'' ' +
+    'AND MONTH(DataRegistro) = :Mes ' +
+    'AND YEAR(DataRegistro) = :Ano ' +
+    'ORDER BY DataRegistro, HoraRegistro';
+  ADOQuerySaida.Parameters.ParamByName('FuncionarioId').Value := FuncionarioId;
+  ADOQuerySaida.Parameters.ParamByName('Mes').Value := Mes;
+  ADOQuerySaida.Parameters.ParamByName('Ano').Value := Ano;
+  ADOQuerySaida.Open;
+end;
+
+function TWaPrincipal.CadastrarAdmnistrador(Nome: string; Cargo: string; CargoAlt: string; Usuario: string; Senha: TBytes; Salt: TBytes): string;
+//Cadastra um usuario ADMINISTRADOR no banco de dados
+begin
+  ADOQuery1.Close;
+  ADOQuery1.SQL.Clear;
+  ADOQuery1.SQL.Add('INSERT INTO ADMINISTRADORES(NOME, CARGO, USUARIO, SenhaHash, Salt) VALUES(:Nome, :Cargo, :Usuario, :SenhaHash, :Salt)');
+  ADOQuery1.Parameters.ParamByName('Nome').Value := Nome;
+
+  if (Cargo = 'Outro') then  //Verifica o valor do parametro Cargo
+    ADOQuery1.Parameters.ParamByName('Cargo').Value := CargoAlt  //se true o banco guarda CargoAlt em CARGO
+  else
+    ADOQuery1.Parameters.ParamByName('Cargo').Value := Cargo;
+
+  ADOQuery1.Parameters.ParamByName('Usuario').Value := Usuario;
+  ADOQuery1.Parameters.ParamByName('SenhaHash').Value := Senha;
+  ADOQuery1.Parameters.ParamByName('Salt').Value := Salt;
+  try
+    ADOQuery1.ExecSQL;
+    ShowMessage('Usuario cadastrado com sucesso!');
+    ADOQuery1.Close;
+  except
+    on E: Exception do
+      ShowMessage('Erro ao cadastrar funcionario: ' + E.Message);
+  end;
 end;
 
 procedure TWaPrincipal.ButtonSendClick(Sender: TObject);   //Botao Login do Formulario de Login
@@ -414,7 +460,8 @@ begin
   for I := 0 to PageControl1.PageCount -1 do
     PageControl1.Pages[i].TabVisible := False;
   PageControl1.ActivePage := TabFormularioLogin;
-
+  for I := 0 to PageControlNav.PageCount -1 do
+    PageControlNav.Pages[i].TabVisible := False;
 end;
 
 procedure TWaPrincipal.Image1Click(Sender: TObject);
@@ -434,34 +481,15 @@ begin
   CargoOutro := EditCargoCadastro.Text;
   Senha := EditSenhaCadastro.Text;
   Salt := GerarSalt(16);
-
-
   SenhaHash := GerarHash(Senha, Salt); //Gera o hash da senha+salt
 
-  ADOQuery1.Close;
-  ADOQuery1.SQL.Clear;
-  ADOQuery1.SQL.Add('INSERT INTO ADMINISTRADORES(USUARIO, NOME, CARGO, SenhaHash, Salt) VALUES(:Usuario, :Nome, :Cargo, :SenhaHash, :Salt)');
-  ADOQuery1.Parameters.ParamByName('Usuario').Value := Usuario;
-  ADOQuery1.Parameters.ParamByName('Nome').Value := Nome;
-  if (Cargo = 'Outro') then
-    ADOQuery1.Parameters.ParamByName('Cargo').Value := CargoOutro
-  else
-    ADOQuery1.Parameters.ParamByName('Cargo').Value := Cargo;
-  ADOQuery1.Parameters.ParamByName('SenhaHash').Value := SenhaHash;
-  ADOQuery1.Parameters.ParamByName('Salt').Value := Salt;
-  try
-    ADOQuery1.ExecSQL;
-    ShowMessage('Usuario cadastrado com sucesso!');
-    EditUsuarioCadastro.Text := '';
-    EditSenhaCadastro.Text := '';
-    EditNomeCadastro.Text := '';
-    ComboBoxCargos.Text := '';
-    EditCargoCadastro.Text := '';
-  except
-    on E: Exception do
-      ShowMessage('Erro ao cadastrar funcionario: ' + E.Message);
-  end;
+  CadastrarAdmnistrador(Nome, Cargo, CargoOutro, Usuario, SenhaHash, Salt);  //Cadastra o administrador
 
+  EditUsuarioCadastro.Text := '';
+  EditSenhaCadastro.Text := '';
+  EditNomeCadastro.Text := '';
+  ComboBoxCargos.Text := '';
+  EditCargoCadastro.Text := '';
 end;
 
 procedure TWaPrincipal.ButtonCadastrarAdminClick(Sender: TObject);
@@ -486,9 +514,7 @@ begin
     BoxCargoFuncionario.Text := '';
     EditSalarioFuncionario.Text := '';
     EditNomeFuncionario.SetFocus;
-  except
-    on E: Exception do
-      ShowMessage('Erro: ' + E.Message);
+  finally
   end;
 end;
 
@@ -553,7 +579,7 @@ begin
   DadosFuncionario := ResgatarDeFuncionario(NomeSelecionado);
 
   BuscaRegistroPontoEntrada(IdSelecionado, Mes, Ano);
-  //BuscaRegistroPontoSaida(IdSelecionado, Mes, Ano);
+  BuscaRegistroPontoSaida(IdSelecionado, Mes, Ano);
 
   Form2.ReportFolhaPonto.Preview();
 end;

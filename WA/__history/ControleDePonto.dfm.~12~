@@ -16270,105 +16270,249 @@ object WaPrincipal: TWaPrincipal
             Padding.Bottom = 10
             ParentBackground = False
             TabOrder = 0
-            object LabelFiltrar: TLabel
+            object PanelFolhaDePonto: TPanel
               AlignWithMargins = True
               Left = 10
-              Top = 10
+              Top = 158
               Width = 280
-              Height = 21
+              Height = 171
               Margins.Left = 0
-              Margins.Top = 0
+              Margins.Top = 20
               Margins.Right = 0
               Margins.Bottom = 0
               Align = alTop
-              Caption = 'Filtro'
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Segoe UI'
-              Font.Style = []
-              ParentFont = False
-              ExplicitWidth = 36
-            end
-            object EditFiltro: TEdit
-              AlignWithMargins = True
-              Left = 10
-              Top = 36
-              Width = 280
-              Height = 29
-              Margins.Left = 0
-              Margins.Top = 5
-              Margins.Right = 0
-              Margins.Bottom = 10
-              Align = alTop
-              Font.Charset = DEFAULT_CHARSET
-              Font.Color = clWindowText
-              Font.Height = -16
-              Font.Name = 'Segoe UI'
-              Font.Style = []
-              ParentFont = False
-              TabOrder = 0
-              TextHint = 'ID, Nome, Cargo, Sal'#225'rio'
-            end
-            object ButtonFiltro: TButton
-              AlignWithMargins = True
-              Left = 10
-              Top = 75
-              Width = 280
-              Height = 25
-              Margins.Left = 0
-              Margins.Top = 0
-              Margins.Right = 0
-              Margins.Bottom = 50
-              Align = alTop
-              Caption = 'Filtrar'
-              TabOrder = 1
-              StyleName = 'Windows'
-            end
-            object FlowPanel1: TFlowPanel
-              AlignWithMargins = True
-              Left = 10
-              Top = 150
-              Width = 280
-              Height = 540
-              Margins.Left = 0
-              Margins.Top = 0
-              Margins.Right = 0
-              Margins.Bottom = 0
-              Align = alClient
-              AutoSize = True
-              BevelEdges = []
               BevelOuter = bvNone
-              Color = 16112294
-              ParentBackground = False
-              TabOrder = 2
-              object ButtonEditar: TButton
-                AlignWithMargins = True
+              TabOrder = 0
+              object Label1: TLabel
                 Left = 0
                 Top = 0
-                Width = 138
+                Width = 280
+                Height = 21
+                Align = alTop
+                Caption = 'Folha de Ponto'
+                Font.Charset = DEFAULT_CHARSET
+                Font.Color = clWindowText
+                Font.Height = -16
+                Font.Name = 'Segoe UI'
+                Font.Style = [fsBold]
+                ParentFont = False
+                ExplicitWidth = 115
+              end
+              object Label3: TLabel
+                Left = 1
+                Top = 44
+                Width = 29
+                Height = 21
+                Caption = 'M'#234's'
+                Color = 16112294
+                Font.Charset = DEFAULT_CHARSET
+                Font.Color = clWindowText
+                Font.Height = -16
+                Font.Name = 'Segoe UI'
+                Font.Style = []
+                ParentColor = False
+                ParentFont = False
+              end
+              object Label4: TLabel
+                Left = 138
+                Top = 44
+                Width = 28
+                Height = 21
+                Caption = 'Ano'
+                Color = 16112294
+                Font.Charset = DEFAULT_CHARSET
+                Font.Color = clWindowText
+                Font.Height = -16
+                Font.Name = 'Segoe UI'
+                Font.Style = []
+                ParentColor = False
+                ParentFont = False
+              end
+              object ButtonFolha: TButton
+                AlignWithMargins = True
+                Left = 0
+                Top = 121
+                Width = 280
                 Height = 50
                 Margins.Left = 0
                 Margins.Top = 0
                 Margins.Right = 0
                 Margins.Bottom = 0
-                Align = alClient
+                Align = alBottom
+                Caption = 'Exibir Folha de Ponto'
+                ParentShowHint = False
+                ShowHint = False
+                TabOrder = 0
+                WordWrap = True
+                StyleName = 'Windows'
+                OnClick = ButtonFolhaClick
+              end
+              object ComboBoxMes: TComboBox
+                Left = 1
+                Top = 77
+                Width = 131
+                Height = 23
+                TabOrder = 1
+                TextHint = 'Selecione o M'#234's'
+                Items.Strings = (
+                  '1'
+                  '2'
+                  '3'
+                  '4'
+                  '5'
+                  '6'
+                  '7'
+                  '8'
+                  '9'
+                  '10'
+                  '11'
+                  '12')
+              end
+              object ComboBoxAno: TComboBox
+                Left = 138
+                Top = 77
+                Width = 141
+                Height = 23
+                TabOrder = 2
+                TextHint = 'Selecione o Ano'
+                Items.Strings = (
+                  '2025'
+                  '2026'
+                  '2027'
+                  '2028'
+                  '2029'
+                  '2030')
+              end
+            end
+            object PanelFiltro: TPanel
+              Left = 10
+              Top = 10
+              Width = 280
+              Height = 128
+              Margins.Left = 0
+              Margins.Top = 0
+              Margins.Right = 0
+              Margins.Bottom = 0
+              Align = alTop
+              BevelOuter = bvNone
+              TabOrder = 1
+              object LabelFiltrar: TLabel
+                AlignWithMargins = True
+                Left = 0
+                Top = 0
+                Width = 280
+                Height = 21
+                Margins.Left = 0
+                Margins.Top = 0
+                Margins.Right = 0
+                Margins.Bottom = 0
+                Align = alTop
+                Caption = 'Filtro'
+                Font.Charset = DEFAULT_CHARSET
+                Font.Color = clWindowText
+                Font.Height = -16
+                Font.Name = 'Segoe UI'
+                Font.Style = [fsBold]
+                ParentFont = False
+                ExplicitWidth = 40
+              end
+              object ButtonFiltro: TButton
+                AlignWithMargins = True
+                Left = 0
+                Top = 78
+                Width = 280
+                Height = 50
+                Margins.Left = 0
+                Margins.Top = 0
+                Margins.Right = 0
+                Margins.Bottom = 0
+                Align = alBottom
+                Caption = 'Filtrar'
+                TabOrder = 0
+                StyleName = 'Windows'
+              end
+              object EditFiltro: TEdit
+                AlignWithMargins = True
+                Left = 0
+                Top = 26
+                Width = 280
+                Height = 29
+                Margins.Left = 0
+                Margins.Top = 5
+                Margins.Right = 0
+                Margins.Bottom = 10
+                Align = alTop
+                Font.Charset = DEFAULT_CHARSET
+                Font.Color = clWindowText
+                Font.Height = -16
+                Font.Name = 'Segoe UI'
+                Font.Style = []
+                ParentFont = False
+                TabOrder = 1
+                TextHint = 'ID, Nome, Cargo, Sal'#225'rio'
+              end
+            end
+            object PanelFerramentasCrud: TPanel
+              AlignWithMargins = True
+              Left = 10
+              Top = 349
+              Width = 280
+              Height = 81
+              Margins.Left = 0
+              Margins.Top = 20
+              Margins.Right = 0
+              Margins.Bottom = 0
+              Align = alTop
+              BevelOuter = bvNone
+              TabOrder = 2
+              object Label5: TLabel
+                AlignWithMargins = True
+                Left = 0
+                Top = 0
+                Width = 280
+                Height = 21
+                Margins.Left = 0
+                Margins.Top = 0
+                Margins.Right = 0
+                Margins.Bottom = 10
+                Align = alTop
+                Caption = 'Ferramentas de Edi'#231#227'o'
+                Font.Charset = DEFAULT_CHARSET
+                Font.Color = clWindowText
+                Font.Height = -16
+                Font.Name = 'Segoe UI'
+                Font.Style = [fsBold]
+                ParentFont = False
+                ExplicitWidth = 172
+              end
+              object ButtonEditar: TButton
+                AlignWithMargins = True
+                Left = 0
+                Top = 31
+                Width = 135
+                Height = 50
+                Margins.Left = 0
+                Margins.Top = 0
+                Margins.Right = 0
+                Margins.Bottom = 0
+                Align = alLeft
                 Caption = 'Editar'
                 TabOrder = 0
+                WordWrap = True
                 StyleName = 'Windows'
                 OnClick = ButtonEditarClick
               end
               object ButtonExcluir: TButton
                 AlignWithMargins = True
-                Left = 138
-                Top = 0
-                Width = 138
+                Left = 145
+                Top = 31
+                Width = 135
                 Height = 50
                 Margins.Left = 0
                 Margins.Top = 0
                 Margins.Right = 0
                 Margins.Bottom = 0
-                Align = alClient
+                Align = alRight
                 Caption = 'Excluir'
                 ParentShowHint = False
                 ShowHint = False
@@ -16376,23 +16520,72 @@ object WaPrincipal: TWaPrincipal
                 WordWrap = True
                 StyleName = 'Windows'
               end
-              object ButtonFolha: TButton
+            end
+            object PanelCheck: TPanel
+              AlignWithMargins = True
+              Left = 10
+              Top = 450
+              Width = 280
+              Height = 135
+              Margins.Left = 0
+              Margins.Top = 20
+              Margins.Right = 0
+              Margins.Bottom = 0
+              Align = alTop
+              BevelOuter = bvNone
+              TabOrder = 3
+              object Label6: TLabel
                 AlignWithMargins = True
                 Left = 0
-                Top = 50
-                Width = 138
+                Top = 0
+                Width = 280
+                Height = 21
+                Margins.Left = 0
+                Margins.Top = 0
+                Margins.Right = 0
+                Margins.Bottom = 10
+                Align = alTop
+                Caption = 'Registrar Ponto'
+                Font.Charset = DEFAULT_CHARSET
+                Font.Color = clWindowText
+                Font.Height = -16
+                Font.Name = 'Segoe UI'
+                Font.Style = [fsBold]
+                ParentFont = False
+                ExplicitWidth = 118
+              end
+              object EditIdCheckIn: TEdit
+                AlignWithMargins = True
+                Left = 0
+                Top = 31
+                Width = 280
+                Height = 23
+                Margins.Left = 0
+                Margins.Top = 0
+                Margins.Right = 0
+                Margins.Bottom = 10
+                Align = alTop
+                ParentShowHint = False
+                ReadOnly = True
+                ShowHint = False
+                TabOrder = 0
+                TextHint = 'Selecione um funcion'#225'rio'
+              end
+              object ButtonCheckIn: TButton
+                AlignWithMargins = True
+                Left = 0
+                Top = 85
+                Width = 280
                 Height = 50
                 Margins.Left = 0
                 Margins.Top = 0
                 Margins.Right = 0
                 Margins.Bottom = 0
-                Align = alClient
-                Caption = 'Exibir Folha de Ponto'
-                ParentShowHint = False
-                ShowHint = False
-                TabOrder = 2
-                WordWrap = True
+                Align = alBottom
+                Caption = 'Registrar Ponto'
+                TabOrder = 1
                 StyleName = 'Windows'
+                OnClick = ButtonCheckInClick
               end
             end
           end
@@ -16407,7 +16600,6 @@ object WaPrincipal: TWaPrincipal
             Margins.Right = 0
             Margins.Bottom = 0
             Align = alClient
-            Anchors = [akLeft, akTop, akRight]
             BorderStyle = bsNone
             Color = clHotLight
             DataSource = DataSource1
@@ -16426,6 +16618,7 @@ object WaPrincipal: TWaPrincipal
             TitleFont.Name = 'Segoe UI'
             TitleFont.Style = []
             StyleName = 'Windows'
+            OnCellClick = DBGrid1CellClick
             OnDrawColumnCell = DBGrid1DrawColumnCell
           end
         end
@@ -32482,13 +32675,13 @@ object WaPrincipal: TWaPrincipal
   end
   object Timer1: TTimer
     OnTimer = Timer1Timer
-    Left = 1288
-    Top = 181
+    Left = 760
+    Top = 37
   end
   object DataSource1: TDataSource
     DataSet = ADOQueryListaFuncionarios
-    Left = 200
-    Top = 453
+    Left = 544
+    Top = 509
   end
   object ADOConnection1: TADOConnection
     Connected = True
@@ -32498,21 +32691,8 @@ object WaPrincipal: TWaPrincipal
       'ata Source=DESKTOP-8HN5C9H'
     LoginPrompt = False
     Provider = 'SQLOLEDB.1'
-    Left = 1264
-    Top = 245
-  end
-  object ClientDataSet1: TClientDataSet
-    Active = True
-    Aggregates = <>
-    Params = <>
-    ProviderName = 'DataSetProvider1'
-    Left = 1264
-    Top = 413
-  end
-  object DataSetProvider1: TDataSetProvider
-    DataSet = ADOQueryListaFuncionarios
-    Left = 1264
-    Top = 357
+    Left = 840
+    Top = 37
   end
   object ADOQuery1: TADOQuery
     Active = True
@@ -32521,8 +32701,8 @@ object WaPrincipal: TWaPrincipal
     Parameters = <>
     SQL.Strings = (
       'SELECT * FROM FUNCIONARIOS')
-    Left = 1264
-    Top = 301
+    Left = 928
+    Top = 37
   end
   object ADOQueryListaFuncionarios: TADOQuery
     Active = True
@@ -32531,7 +32711,67 @@ object WaPrincipal: TWaPrincipal
     Parameters = <>
     SQL.Strings = (
       'SELECT * FROM FUNCIONARIOS')
-    Left = 200
-    Top = 397
+    Left = 424
+    Top = 509
+  end
+  object ADOQueryFolhaFuncionario: TADOQuery
+    Active = True
+    Connection = ADOConnection1
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      'SELECT * FROM FUNCIONARIOS')
+    Left = 1242
+    Top = 379
+  end
+  object DataSource2: TDataSource
+    DataSet = ADOQueryFolhaFuncionario
+    Left = 1242
+    Top = 435
+  end
+  object ADOQueryEntrada: TADOQuery
+    Active = True
+    Connection = ADOConnection1
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      'SELECT * FROM RegistrosPonto')
+    Left = 736
+    Top = 565
+  end
+  object ADOQuerySaida: TADOQuery
+    Active = True
+    Connection = ADOConnection1
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      'SELECT * FROM RegistrosPonto')
+    Left = 848
+    Top = 565
+  end
+  object DataSourceEntrada: TDataSource
+    DataSet = ADOQueryEntrada
+    Left = 736
+    Top = 629
+  end
+  object DataSourceSaida: TDataSource
+    DataSet = ADOQuerySaida
+    Left = 848
+    Top = 629
+  end
+  object ADOQueryRegistrosPonto: TADOQuery
+    Active = True
+    Connection = ADOConnection1
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      'SELECT * FROM RegistrosPonto')
+    Left = 584
+    Top = 565
+  end
+  object DataSourceRegistrosPonto: TDataSource
+    DataSet = ADOQueryRegistrosPonto
+    Left = 576
+    Top = 621
   end
 end

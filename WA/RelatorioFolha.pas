@@ -37,10 +37,10 @@ type
     RLLabel8: TRLLabel;
     RLLabel9: TRLLabel;
     RLLabel10: TRLLabel;
-    RLDBText5: TRLDBText;
-    RLDBText6: TRLDBText;
-    RLDBText7: TRLDBText;
+    RLDBTextData: TRLDBText;
+    RLDBTextEntrada: TRLDBText;
     RLBand4: TRLBand;
+    RLDBTextSaida: TRLDBText;
   private
     { Private declarations }
   public
