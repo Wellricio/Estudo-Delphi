@@ -384,7 +384,7 @@ begin
   SenhaHashBanco := BuscarHashUsuario(Usuario);
   HashGerado := GerarHash(Senha, Salt);
 
-  if (Length(HashGerado) = Length(SenhaHashBanco)) and //Compara primeiro o tamanho das array e depois o valor exato byte a byte das variaveis na memoria
+  if (Length(HashGerado) = Length(SenhaHashBanco)) and //Compara primeiro o tamanho das array e depois o valor exato byte a byte das arrays na memoria
      CompareMem(@HashGerado[0], @SenhaHashBanco[0], Length(HashGerado)) then
   begin
     ShowMessage('Login realizado com sucesso!');

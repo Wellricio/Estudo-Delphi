@@ -495,7 +495,7 @@ object WaPrincipal: TWaPrincipal
     Margins.Top = 0
     Margins.Right = 0
     Margins.Bottom = 0
-    ActivePage = TabHome
+    ActivePage = TabFormularioLogin
     Align = alClient
     TabOrder = 0
     object TabFormularioLogin: TTabSheet
@@ -8420,7 +8420,7 @@ object WaPrincipal: TWaPrincipal
         Margins.Top = 0
         Margins.Right = 0
         Margins.Bottom = 0
-        ActivePage = TabCadastrarFuncionarios
+        ActivePage = TabInicio
         Align = alClient
         TabOrder = 0
         OnChange = PageControlNavChange
