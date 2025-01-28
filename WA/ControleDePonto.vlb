@@ -10,12 +10,6 @@ Coordinates=10,78,105,51
 [LabelCargo]
 Coordinates=357,146,70,51
 
-[LabelFolha]
-Coordinates=253,78,68,51
-
-[LabelCheck]
-Coordinates=185,146,72,51
-
 [LabelCadastrar]
 Coordinates=140,78,89,51
 
@@ -32,7 +26,7 @@ Coordinates=277,146,60,51
 Coordinates=374,10,69,51
 
 []
-Coordinates=292,10,63,51
+Coordinates=185,146,72,51
 Visible=True
 
 [EditNomeFuncionario]

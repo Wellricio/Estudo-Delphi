@@ -17,8 +17,6 @@ uses
 type
   TWaPrincipal = class(TForm)
     PanelNav: TPanel;
-    LabelCheck: TLabel;
-    LabelFolha: TLabel;
     LabelCadastrar: TLabel;
     LabelFuncionarios: TLabel;
     LabelSair: TLabel;
@@ -31,7 +29,6 @@ type
     ButtonCadastrar: TButton;
     PageControlNav: TPageControl;
     TabInicio: TTabSheet;
-    TabFolhaDePonto: TTabSheet;
     TabFuncionarios: TTabSheet;
     TabCadastrarFuncionarios: TTabSheet;
     FormularioCadastroFuncionario: TPanel;
@@ -45,7 +42,6 @@ type
     ButtonSend: TButton;
     LogoWaPng: TImage;
     PanelLogin: TPanel;
-    TabCheckIn: TTabSheet;
     Timer1: TTimer;
     PanelFerramentasFuncionarios: TPanel;
     LabelFiltrar: TLabel;
@@ -54,9 +50,7 @@ type
     ButtonEditar: TButton;
     ButtonExcluir: TButton;
     ButtonFolha: TButton;
-    Image2: TImage;
     LabelHorario: TLabel;
-    Label2: TLabel;
     DBGrid1: TDBGrid;
     DataSource1: TDataSource;
     ADOConnection1: TADOConnection;
@@ -99,10 +93,9 @@ type
     DataSourceSaida: TDataSource;
     ADOQueryRegistrosPonto: TADOQuery;
     DataSourceRegistrosPonto: TDataSource;
+    Image2: TImage;
     procedure LabelCadastrarClick(Sender: TObject);
     procedure LabelFuncionariosClick(Sender: TObject);
-    procedure LabelFolhaClick(Sender: TObject);
-    procedure LabelCheckClick(Sender: TObject);
     procedure ButtonCadastrarClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ButtonSendClick(Sender: TObject);
@@ -132,6 +125,7 @@ type
     function CadastrarAdmnistrador(Nome: string; Cargo: string; CargoAlt: string; Usuario: string; Senha: TBytes; Salt: TBytes): string;
     procedure ButtonCheckInClick(Sender: TObject);
     procedure ButtonExcluirClick(Sender: TObject);
+    procedure PageControlNavChange(Sender: TObject);
   private
     NomeSelecionado: string; //Variavel global que guarda um record da coluna Nome do DBGrid1
     IdSelecionado: Integer;  //Variavel global que guarda um record da coluna ID do DBGrid1
@@ -492,6 +486,7 @@ var i: Integer;
 begin
   Randomize;
 
+  //Esconde o Index dos PageControl
   for I := 0 to PageControl1.PageCount -1 do
     PageControl1.Pages[i].TabVisible := False;
   PageControl1.ActivePage := TabFormularioLogin;
@@ -703,18 +698,17 @@ begin
   PageControl1.ActivePage := TabFormularioLogin;
 end;
 
+procedure TWaPrincipal.PageControlNavChange(Sender: TObject);
+begin
+  if PageControlNav.ActivePage = TabInicio then
+    Timer1.Interval := 1000
+  else
+    Timer1.Interval := 0;
+end;
+
 procedure TWaPrincipal.Timer1Timer(Sender: TObject);
 begin
   LabelHorario.Caption := TimeToStr(Now);
 end;
 
-procedure TWaPrincipal.LabelFolhaClick(Sender: TObject);
-begin
-  PageControlNav.ActivePage := TabFolhaDePonto;
-end;
-
-procedure TWaPrincipal.LabelCheckClick(Sender: TObject);
-begin
-  PageControlNav.ActivePage := TabCheckIn;
-end;
 end.

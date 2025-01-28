@@ -8420,17 +8420,44 @@ object WaPrincipal: TWaPrincipal
         Margins.Top = 0
         Margins.Right = 0
         Margins.Bottom = 0
-        ActivePage = TabFuncionarios
+        ActivePage = TabCadastrarFuncionarios
         Align = alClient
         TabOrder = 0
+        OnChange = PageControlNavChange
         object TabInicio: TTabSheet
           Caption = 'TabInicio'
+          object LabelHorario: TLabel
+            AlignWithMargins = True
+            Left = 0
+            Top = 434
+            Width = 1336
+            Height = 216
+            Margins.Left = 0
+            Margins.Top = 0
+            Margins.Right = 0
+            Margins.Bottom = 50
+            Align = alBottom
+            Alignment = taCenter
+            Color = 16112294
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -163
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            ParentColor = False
+            ParentFont = False
+            Transparent = True
+            WordWrap = True
+            ExplicitLeft = -1
+            ExplicitTop = 200
+            ExplicitWidth = 1337
+          end
           object Image2: TImage
             AlignWithMargins = True
             Left = 0
             Top = 30
             Width = 1336
-            Height = 250
+            Height = 350
             Margins.Left = 0
             Margins.Top = 30
             Margins.Right = 0
@@ -16213,36 +16240,7 @@ object WaPrincipal: TWaPrincipal
               21BC0000000049454E44AE426082}
             Proportional = True
             Stretch = True
-            ExplicitLeft = 3
-            ExplicitTop = 3
-            ExplicitWidth = 991
           end
-          object LabelHorario: TLabel
-            AlignWithMargins = True
-            Left = 0
-            Top = 434
-            Width = 1336
-            Height = 216
-            Margins.Left = 0
-            Margins.Top = 0
-            Margins.Right = 0
-            Margins.Bottom = 50
-            Align = alBottom
-            Alignment = taCenter
-            Color = 16112294
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -163
-            Font.Name = 'Segoe UI'
-            Font.Style = []
-            ParentColor = False
-            ParentFont = False
-            ExplicitWidth = 45
-          end
-        end
-        object TabFolhaDePonto: TTabSheet
-          Caption = 'TabFolhaDePonto'
-          ImageIndex = 1
         end
         object TabFuncionarios: TTabSheet
           AlignWithMargins = True
@@ -16789,17 +16787,6 @@ object WaPrincipal: TWaPrincipal
             end
           end
         end
-        object TabCheckIn: TTabSheet
-          Caption = 'TabCheckIn'
-          ImageIndex = 4
-          object Label2: TLabel
-            Left = 1192
-            Top = 480
-            Width = 34
-            Height = 15
-            Caption = 'Label2'
-          end
-        end
       end
       object PanelNav: TPanel
         Left = 0
@@ -16813,44 +16800,8 @@ object WaPrincipal: TWaPrincipal
         DesignSize = (
           1344
           65)
-        object LabelCheck: TLabel
-          Left = 128
-          Top = 17
-          Width = 76
-          Height = 25
-          Cursor = crHandPoint
-          Alignment = taCenter
-          Caption = 'Check In'
-          Color = 16112294
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWhite
-          Font.Height = -19
-          Font.Name = 'Segoe UI'
-          Font.Style = [fsBold]
-          ParentColor = False
-          ParentFont = False
-          OnClick = LabelCheckClick
-        end
-        object LabelFolha: TLabel
-          Left = 226
-          Top = 17
-          Width = 134
-          Height = 25
-          Cursor = crHandPoint
-          Alignment = taCenter
-          Caption = 'Folha de Ponto'
-          Color = 16112294
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWhite
-          Font.Height = -19
-          Font.Name = 'Segoe UI'
-          Font.Style = [fsBold]
-          ParentColor = False
-          ParentFont = False
-          OnClick = LabelFolhaClick
-        end
         object LabelCadastrar: TLabel
-          Left = 528
+          Left = 320
           Top = 17
           Width = 197
           Height = 25
@@ -16868,13 +16819,13 @@ object WaPrincipal: TWaPrincipal
           OnClick = LabelCadastrarClick
         end
         object LabelFuncionarios: TLabel
-          Left = 384
+          Left = 120
           Top = 17
-          Width = 115
+          Width = 164
           Height = 25
           Cursor = crHandPoint
           Alignment = taCenter
-          Caption = 'Funcion'#225'rios'
+          Caption = 'Painel de Controle'
           Color = 16112294
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWhite
