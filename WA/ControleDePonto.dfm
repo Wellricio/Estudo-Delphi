@@ -16513,12 +16513,13 @@ object WaPrincipal: TWaPrincipal
                 Margins.Right = 0
                 Margins.Bottom = 0
                 Align = alRight
-                Caption = 'Excluir'
+                Caption = 'Excluir Funcion'#225'rio'
                 ParentShowHint = False
                 ShowHint = False
                 TabOrder = 1
                 WordWrap = True
                 StyleName = 'Windows'
+                OnClick = ButtonExcluirClick
               end
             end
             object PanelCheck: TPanel

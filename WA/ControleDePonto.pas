@@ -131,6 +131,7 @@ type
     //function BuscaRegistroPontoSaida(FuncionarioId: Integer; Mes: Integer; Ano: Integer): string;
     function CadastrarAdmnistrador(Nome: string; Cargo: string; CargoAlt: string; Usuario: string; Senha: TBytes; Salt: TBytes): string;
     procedure ButtonCheckInClick(Sender: TObject);
+    procedure ButtonExcluirClick(Sender: TObject);
   private
     NomeSelecionado: string; //Variavel global que guarda um record da coluna Nome do DBGrid1
     IdSelecionado: Integer;  //Variavel global que guarda um record da coluna ID do DBGrid1
@@ -603,6 +604,31 @@ begin
     ButtonEditar.Caption := 'Editar';
 end;
 
+procedure TWaPrincipal.ButtonExcluirClick(Sender: TObject);  //Botao para excluir um funcionario do banco utilizando como parametro a variavel global IdSelecionado
+begin
+  if MessageDlg('Você tem certeza que deseja apagar o funcionario?', mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
+    begin
+      try
+        ADOQuery1.Close;
+        ADOQuery1.SQL.Clear;
+        ADOQuery1.SQL.Text := 'DELETE FROM FUNCIONARIOS WHERE ID = :FuncionarioId';
+        ADOQuery1.Parameters.ParamByName('FuncionarioId').Value := IdSelecionado;
+        ADOQuery1.ExecSQL;
+
+        //Atualiza o DBGrid
+        ADOQueryListaFuncionarios.Close;
+        ADOQueryListaFuncionarios.Open;
+
+        ShowMessage('Funcionário excluído com sucesso!');
+      except
+        on E: Exception do
+          ShowMessage('Não foi possivel apagar o funcionario, erro: ' + E.Message);
+      end;
+    end
+  else
+    ShowMessage('Ação cancelada!');
+end;
+
 procedure TWaPrincipal.ButtonFolhaClick(Sender: TObject);
 var
   DadosFuncionario: string;
@@ -691,5 +717,4 @@ procedure TWaPrincipal.LabelCheckClick(Sender: TObject);
 begin
   PageControlNav.ActivePage := TabCheckIn;
 end;
-
 end.
