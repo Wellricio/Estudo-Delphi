@@ -624,44 +624,50 @@ begin
     ShowMessage('Ação cancelada!');
 end;
 
-procedure TWaPrincipal.ButtonFolhaClick(Sender: TObject);
+procedure TWaPrincipal.ButtonFolhaClick(Sender: TObject); //Exibe os Registros de Ponto do funcionario desejado
 var
+  Mes, Ano: Integer;
   DadosFuncionario: string;
 begin
-  Mes := StrToInt(ComboBoxMes.Text);
-  Ano := StrToInt(ComboBoxAno.Text);
   DadosFuncionario := ResgatarDeFuncionario(NomeSelecionado);
-  {
-  BuscaRegistroPonto(IdSelecionado, Mes, Ano);
-  BuscaRegistroPontoEntrada(IdSelecionado, Mes, Ano);
-  BuscaRegistroPontoSaida(IdSelecionado, Mes, Ano);
-  }
-  //fINALMENTE APRENDI DE UMA FORMA QUE FUNCIONAAAAAAAA
-  ADOQueryRegistrosPonto.Close;
-  ADOQueryRegistrosPonto.SQL.Text :=
-    'SELECT ' +
-    '    CASE ' +
-    '        WHEN TipoRegistro = ''Entrada'' THEN DataRegistro ' +
-    '        ELSE NULL ' +
-    '    END AS RegistroEntrada, ' +
-    '    CASE ' +
-    '        WHEN TipoRegistro = ''Entrada'' THEN HoraRegistro ' +
-    '        ELSE NULL ' +
-    '    END AS HoraEntrada, ' +
-    '    CASE ' +
-    '        WHEN TipoRegistro = ''Saída'' THEN HoraRegistro ' +
-    '        ELSE NULL ' +
-    '    END AS HoraSaida ' +
-    'FROM RegistrosPonto ' +
-    'WHERE FuncionarioId = :FuncionarioId ' +
-    '  AND MONTH(DataRegistro) = :Mes ' +
-    '  AND YEAR(DataRegistro) = :Ano ' +
-    '  AND (TipoRegistro = ''Entrada'' OR TipoRegistro = ''Saída'')';
-  ADOQueryRegistrosPonto.Parameters.ParamByName('FuncionarioId').Value := IdSelecionado;
-  ADOQueryRegistrosPonto.Parameters.ParamByName('Mes').Value := Mes;
-  ADOQueryRegistrosPonto.Parameters.ParamByName('Ano').Value := Ano;
-  ADOQueryRegistrosPonto.Open;
-  Form2.ReportFolhaPonto.Preview();
+
+  if (ComboBoxMes.Text <> '') and (ComboBoxAno.Text <> '') then
+    begin
+      Mes := StrToInt(ComboBoxMes.Text);
+      Ano := StrToInt(ComboBoxAno.Text);
+      //fINALMENTE APRENDI DE UMA FORMA QUE FUNCIONAAAAAAAA
+      //Faz o filtro de Mes e Ano do funcionario
+      ADOQueryRegistrosPonto.Close;
+      ADOQueryRegistrosPonto.SQL.Text :=
+        'SELECT ' +
+        '    CASE ' +
+        '        WHEN TipoRegistro = ''Entrada'' THEN DataRegistro ' +
+        '        ELSE NULL ' +
+        '    END AS RegistroEntrada, ' +
+        '    CASE ' +
+        '        WHEN TipoRegistro = ''Entrada'' THEN HoraRegistro ' +
+        '        ELSE NULL ' +
+        '    END AS HoraEntrada, ' +
+        '    CASE ' +
+        '        WHEN TipoRegistro = ''Saída'' THEN HoraRegistro ' +
+        '        ELSE NULL ' +
+        '    END AS HoraSaida ' +
+        'FROM RegistrosPonto ' +
+        'WHERE FuncionarioId = :FuncionarioId ' +
+        '  AND MONTH(DataRegistro) = :Mes ' +
+        '  AND YEAR(DataRegistro) = :Ano ' +
+        '  AND (TipoRegistro = ''Entrada'' OR TipoRegistro = ''Saída'')';
+      ADOQueryRegistrosPonto.Parameters.ParamByName('FuncionarioId').Value := IdSelecionado;
+      ADOQueryRegistrosPonto.Parameters.ParamByName('Mes').Value := Mes;
+      ADOQueryRegistrosPonto.Parameters.ParamByName('Ano').Value := Ano;
+      ADOQueryRegistrosPonto.Open;
+      Form2.ReportFolhaPonto.Preview();
+    end
+  else
+    begin
+      ShowMessage('Preencha Mês e Ano para exibir os Registros de Ponto');
+      Exit;
+    end;
 end;
 
 //Abaixo: Eventos Click das Labels contidas no PanelNav

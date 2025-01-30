@@ -495,7 +495,7 @@ object WaPrincipal: TWaPrincipal
     Margins.Top = 0
     Margins.Right = 0
     Margins.Bottom = 0
-    ActivePage = TabFormularioLogin
+    ActivePage = TabHome
     Align = alClient
     TabOrder = 0
     object TabFormularioLogin: TTabSheet
@@ -8420,7 +8420,7 @@ object WaPrincipal: TWaPrincipal
         Margins.Top = 0
         Margins.Right = 0
         Margins.Bottom = 0
-        ActivePage = TabInicio
+        ActivePage = TabFuncionarios
         Align = alClient
         TabOrder = 0
         OnChange = PageControlNavChange
@@ -8448,9 +8448,7 @@ object WaPrincipal: TWaPrincipal
             ParentFont = False
             Transparent = True
             WordWrap = True
-            ExplicitLeft = -1
-            ExplicitTop = 200
-            ExplicitWidth = 1337
+            ExplicitWidth = 45
           end
           object Image2: TImage
             AlignWithMargins = True

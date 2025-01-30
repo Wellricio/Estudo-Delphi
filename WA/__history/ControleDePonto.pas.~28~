@@ -17,8 +17,6 @@ uses
 type
   TWaPrincipal = class(TForm)
     PanelNav: TPanel;
-    LabelCheck: TLabel;
-    LabelFolha: TLabel;
     LabelCadastrar: TLabel;
     LabelFuncionarios: TLabel;
     LabelSair: TLabel;
@@ -31,7 +29,6 @@ type
     ButtonCadastrar: TButton;
     PageControlNav: TPageControl;
     TabInicio: TTabSheet;
-    TabFolhaDePonto: TTabSheet;
     TabFuncionarios: TTabSheet;
     TabCadastrarFuncionarios: TTabSheet;
     FormularioCadastroFuncionario: TPanel;
@@ -45,7 +42,6 @@ type
     ButtonSend: TButton;
     LogoWaPng: TImage;
     PanelLogin: TPanel;
-    TabCheckIn: TTabSheet;
     Timer1: TTimer;
     PanelFerramentasFuncionarios: TPanel;
     LabelFiltrar: TLabel;
@@ -54,9 +50,7 @@ type
     ButtonEditar: TButton;
     ButtonExcluir: TButton;
     ButtonFolha: TButton;
-    Image2: TImage;
     LabelHorario: TLabel;
-    Label2: TLabel;
     DBGrid1: TDBGrid;
     DataSource1: TDataSource;
     ADOConnection1: TADOConnection;
@@ -97,10 +91,11 @@ type
     ADOQuerySaida: TADOQuery;
     DataSourceEntrada: TDataSource;
     DataSourceSaida: TDataSource;
+    ADOQueryRegistrosPonto: TADOQuery;
+    DataSourceRegistrosPonto: TDataSource;
+    Image2: TImage;
     procedure LabelCadastrarClick(Sender: TObject);
     procedure LabelFuncionariosClick(Sender: TObject);
-    procedure LabelFolhaClick(Sender: TObject);
-    procedure LabelCheckClick(Sender: TObject);
     procedure ButtonCadastrarClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ButtonSendClick(Sender: TObject);
@@ -124,13 +119,17 @@ type
     procedure DBGrid1CellClick(Column: TColumn);
     function ResgatarDeFuncionario(Funcionario: string): string;
     function AlimentarRegistrosPonto(FuncionarioId: Integer; TipoDeRegistro: string): string;
-    function BuscaRegistroPontoEntrada(FuncionarioId: Integer; Mes: Integer; Ano: Integer): string;
-    function BuscaRegistroPontoSaida(FuncionarioId: Integer; Mes: Integer; Ano: Integer): string;
+    //function BuscaRegistroPonto(FuncionarioId: Integer; Mes: Integer; Ano: Integer): string;
+    //function BuscaRegistroPontoEntrada(FuncionarioId: Integer; Mes: Integer; Ano: Integer): string;
+    //function BuscaRegistroPontoSaida(FuncionarioId: Integer; Mes: Integer; Ano: Integer): string;
     function CadastrarAdmnistrador(Nome: string; Cargo: string; CargoAlt: string; Usuario: string; Senha: TBytes; Salt: TBytes): string;
     procedure ButtonCheckInClick(Sender: TObject);
+    procedure ButtonExcluirClick(Sender: TObject);
+    procedure PageControlNavChange(Sender: TObject);
   private
     NomeSelecionado: string; //Variavel global que guarda um record da coluna Nome do DBGrid1
     IdSelecionado: Integer;  //Variavel global que guarda um record da coluna ID do DBGrid1
+    Mes, Ano: Integer;
   public
 
   end;
@@ -276,6 +275,36 @@ begin
       ShowMessage('Erro ao registrar ponto: ' + E.Message);
   end;
 end;
+{
+function TWaPrincipal.BuscaRegistroPonto(FuncionarioId: Integer; Mes: Integer; Ano: Integer): string;
+begin
+  ADOQueryRegistrosPonto.Close;
+  //A seguir veras a maior brutalidade cometida contra o SQL
+  //Vou executar este codigo agora, quais sao as probabilidades disto funcionario? Volto ja e lhe conto se funcionou ou nao
+  ADOQueryRegistrosPonto.SQL.Text :=
+  'SELECT ' +
+  'CASE ' +
+  'WHEN TipoRegistro = ''Entrada'' THEN DataRegistro ' +
+  'ELSE NULL ' +
+  'END AS RegistroEntrada ' +
+  'CASE ' +
+  'WHEN TipoRegistro = ''Entrada'' THEN HoraRegistro ' +
+  'ELSE NULL ' +
+  'END AS HoraEntrada ' +
+  'CASE ' +
+  'WHEN TipoRegistro = ''Saída'' THEN HoraRegistro ' +
+  'ELSE NULL ' +
+  'END AS HoraSaida ' +
+  'FROM RegistrosPonto ' +
+  'WHERE FuncionarioId = :FuncionarioId ' +
+  'AND MONTH(DataRegistro) = :Mes ' +
+  'AND YEAR(DataRegistro) = :Ano ' +
+  'AND (TipoRegistro = ''Entrada'' OR TipoRegistro = ''Saída'')';
+  ADOQuery1.Parameters.ParamByName('FuncionarioId').Value := FuncionarioId;
+  ADOQuery1.Parameters.ParamByName('Mes').Value := Mes;
+  ADOQuery1.Parameters.ParamByName('Ano').Value := Ano;
+  ADOQueryRegistrosPonto.Open;
+end;
 
 function TWaPrincipal.BuscaRegistroPontoEntrada(FuncionarioId: Integer; Mes: Integer; Ano: Integer): string;
 begin
@@ -310,7 +339,7 @@ begin
   ADOQuerySaida.Parameters.ParamByName('Ano').Value := Ano;
   ADOQuerySaida.Open;
 end;
-
+ }
 function TWaPrincipal.CadastrarAdmnistrador(Nome: string; Cargo: string; CargoAlt: string; Usuario: string; Senha: TBytes; Salt: TBytes): string;
 //Cadastra um usuario ADMINISTRADOR no banco de dados
 begin
@@ -355,7 +384,7 @@ begin
   SenhaHashBanco := BuscarHashUsuario(Usuario);
   HashGerado := GerarHash(Senha, Salt);
 
-  if (Length(HashGerado) = Length(SenhaHashBanco)) and //Compara primeiro o tamanho das array e depois o valor exato byte a byte das variaveis na memoria
+  if (Length(HashGerado) = Length(SenhaHashBanco)) and //Compara primeiro o tamanho das array e depois o valor exato byte a byte das arrays na memoria
      CompareMem(@HashGerado[0], @SenhaHashBanco[0], Length(HashGerado)) then
   begin
     ShowMessage('Login realizado com sucesso!');
@@ -457,6 +486,7 @@ var i: Integer;
 begin
   Randomize;
 
+  //Esconde o Index dos PageControl
   for I := 0 to PageControl1.PageCount -1 do
     PageControl1.Pages[i].TabVisible := False;
   PageControl1.ActivePage := TabFormularioLogin;
@@ -569,19 +599,75 @@ begin
     ButtonEditar.Caption := 'Editar';
 end;
 
+procedure TWaPrincipal.ButtonExcluirClick(Sender: TObject);  //Botao para excluir um funcionario do banco utilizando como parametro a variavel global IdSelecionado
+begin
+  if MessageDlg('Você tem certeza que deseja apagar o funcionario?', mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
+    begin
+      try
+        ADOQuery1.Close;
+        ADOQuery1.SQL.Clear;
+        ADOQuery1.SQL.Text := 'DELETE FROM FUNCIONARIOS WHERE ID = :FuncionarioId';
+        ADOQuery1.Parameters.ParamByName('FuncionarioId').Value := IdSelecionado;
+        ADOQuery1.ExecSQL;
+
+        //Atualiza o DBGrid
+        ADOQueryListaFuncionarios.Close;
+        ADOQueryListaFuncionarios.Open;
+
+        ShowMessage('Funcionário excluído com sucesso!');
+      except
+        on E: Exception do
+          ShowMessage('Não foi possivel apagar o funcionario, erro: ' + E.Message);
+      end;
+    end
+  else
+    ShowMessage('Ação cancelada!');
+end;
+
 procedure TWaPrincipal.ButtonFolhaClick(Sender: TObject);
 var
-  DadosFuncionario: string;
   Mes, Ano: Integer;
+  DadosFuncionario: string;
 begin
-  Mes := StrToInt(ComboBoxMes.Text);
-  Ano := StrToInt(ComboBoxAno.Text);
   DadosFuncionario := ResgatarDeFuncionario(NomeSelecionado);
 
-  BuscaRegistroPontoEntrada(IdSelecionado, Mes, Ano);
-  BuscaRegistroPontoSaida(IdSelecionado, Mes, Ano);
-
-  Form2.ReportFolhaPonto.Preview();
+  if (ComboBoxMes.Text <> '') and (ComboBoxAno.Text <> '') then
+    begin
+      Mes := StrToInt(ComboBoxMes.Text);
+      Ano := StrToInt(ComboBoxAno.Text);
+      //fINALMENTE APRENDI DE UMA FORMA QUE FUNCIONAAAAAAAA
+      //Faz o filtro de Mes e Ano do funcionario
+      ADOQueryRegistrosPonto.Close;
+      ADOQueryRegistrosPonto.SQL.Text :=
+        'SELECT ' +
+        '    CASE ' +
+        '        WHEN TipoRegistro = ''Entrada'' THEN DataRegistro ' +
+        '        ELSE NULL ' +
+        '    END AS RegistroEntrada, ' +
+        '    CASE ' +
+        '        WHEN TipoRegistro = ''Entrada'' THEN HoraRegistro ' +
+        '        ELSE NULL ' +
+        '    END AS HoraEntrada, ' +
+        '    CASE ' +
+        '        WHEN TipoRegistro = ''Saída'' THEN HoraRegistro ' +
+        '        ELSE NULL ' +
+        '    END AS HoraSaida ' +
+        'FROM RegistrosPonto ' +
+        'WHERE FuncionarioId = :FuncionarioId ' +
+        '  AND MONTH(DataRegistro) = :Mes ' +
+        '  AND YEAR(DataRegistro) = :Ano ' +
+        '  AND (TipoRegistro = ''Entrada'' OR TipoRegistro = ''Saída'')';
+      ADOQueryRegistrosPonto.Parameters.ParamByName('FuncionarioId').Value := IdSelecionado;
+      ADOQueryRegistrosPonto.Parameters.ParamByName('Mes').Value := Mes;
+      ADOQueryRegistrosPonto.Parameters.ParamByName('Ano').Value := Ano;
+      ADOQueryRegistrosPonto.Open;
+      Form2.ReportFolhaPonto.Preview();
+    end
+  else
+    begin
+      ShowMessage('Preencha Mês e Ano para exibir os Registros de Ponto');
+      Exit;
+    end;
 end;
 
 //Abaixo: Eventos Click das Labels contidas no PanelNav
@@ -618,19 +704,17 @@ begin
   PageControl1.ActivePage := TabFormularioLogin;
 end;
 
+procedure TWaPrincipal.PageControlNavChange(Sender: TObject);
+begin
+  if PageControlNav.ActivePage = TabInicio then
+    Timer1.Interval := 1000
+  else
+    Timer1.Interval := 0;
+end;
+
 procedure TWaPrincipal.Timer1Timer(Sender: TObject);
 begin
   LabelHorario.Caption := TimeToStr(Now);
-end;
-
-procedure TWaPrincipal.LabelFolhaClick(Sender: TObject);
-begin
-  PageControlNav.ActivePage := TabFolhaDePonto;
-end;
-
-procedure TWaPrincipal.LabelCheckClick(Sender: TObject);
-begin
-  PageControlNav.ActivePage := TabCheckIn;
 end;
 
 end.
